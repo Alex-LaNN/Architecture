@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Button press counter</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Button press counter</h1>
+      <button class="button" id="PlusBtn">Plus</button>
+      <button class="button" id="MinusBtn">Minus</button>
+      <h3 id="result">Number of button presses: Plus - 0, Minus - 0</h3>
+    </div>
+
+    <script>
+      // Enum для кнопок.
+      const ButtonEnum = {
+        Plus: "Plus",
+        Minus: "Minus",
+      };
+
+      // Функция для отправки запроса на сервер.
+      async function sendButtonClick(buttonType) {
+        const response = await fetch(`http://localhost:3000/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ buttonType }),
+        });
+
+        const data = await response.json();
+        console.log(`34 data: ${JSON.stringify(data)}`);
+        const resultElement = document.getElementById("result");
+        resultElement.textContent = `Number of button presses: Plus - ${data.plus}, Minus - ${data.minus}`;
+      }
+
+      // Обработчики событий для кнопок.
+      document
+        .getElementById("PlusBtn")
+        .addEventListener("click", () => sendButtonClick(ButtonEnum.Plus));
+      document
+        .getElementById("MinusBtn")
+        .addEventListener("click", () => sendButtonClick(ButtonEnum.Minus));
+    </script>
+  </body>
+</html>

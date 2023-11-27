@@ -1,0 +1,26 @@
+{
+  "name": "architecture",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alex-LaNN/Architecture.git"
+  },
+  "author": "Alex-LaNN",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alex-LaNN/Architecture/issues"
+  },
+  "homepage": "https://github.com/Alex-LaNN/Architecture#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.3",
+    "typescript": "^5.3.2"
+  }
+}

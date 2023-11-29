@@ -1,0 +1,37 @@
+.container {
+  /* Setting a container to have a flex context for its children.
+  Настройка контейнера для создания гибкого контекста для его дочерних элементов. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  /* The padding around the element.
+  Отступ вокруг элемента. */
+  margin: 10px;
+}
+
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 5px;
+}
+
+.button {
+  height: 25px;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: #30b51c;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  border: none;
+  outline: none;
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.button:hover {
+  background-color: #9c2f4c;
+  transform: scale(1.1);
+}

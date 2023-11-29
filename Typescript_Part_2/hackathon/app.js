@@ -8,14 +8,12 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const port = 3000;
-// Enum для кнопок.
 var ButtonEnum;
 (function (ButtonEnum) {
     ButtonEnum["Plus"] = "Plus";
     ButtonEnum["Minus"] = "Minus";
 })(ButtonEnum || (ButtonEnum = {}));
 ;
-// Инициализация счетчиков для отображения количества нажатий кнопок.
 let clickCounts = {
     [ButtonEnum.Plus]: 0,
     [ButtonEnum.Minus]: 0,
@@ -23,7 +21,6 @@ let clickCounts = {
 app.use(body_parser_1.default.json());
 app.use((0, cors_1.default)());
 app.use(express_1.default.static('front'));
-// Роут для обработки нажатий кнопок.
 app.post("/", (req, res) => {
     const buttonType = req.body.buttonType;
     console.log(`27 buttonType: < ${buttonType} >`);

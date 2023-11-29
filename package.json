@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build'functionMapObject'": "rimraf Typescript_Part_2/functionMapObject/index.js && npx tsc",
+    "functionMapObject": "npm run build'functionMapObject' && node Typescript_Part_2/functionMapObject/index",
+    "build'functionWithBugs'": "rimraf Typescript_Part_2/functionWithBugs/index.js && npx tsc",
+    "functionWithBugs": "npm run build'functionWithBugs' && node Typescript_Part_2/functionWithBugs/index"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.9.3",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
     "typescript": "^5.3.2"
   }
 }

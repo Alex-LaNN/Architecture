@@ -7,7 +7,9 @@
     "build'functionMapObject'": "rimraf Typescript_Part_2/functionMapObject/index.js && npx tsc",
     "functionMapObject": "npm run build'functionMapObject' && node Typescript_Part_2/functionMapObject/index",
     "build'functionWithBugs'": "rimraf Typescript_Part_2/functionWithBugs/index.js && npx tsc",
-    "functionWithBugs": "npm run build'functionWithBugs' && node Typescript_Part_2/functionWithBugs/index"
+    "functionWithBugs": "npm run build'functionWithBugs' && node Typescript_Part_2/functionWithBugs/index",
+    "build'test'": "rimraf Typescript_Part_2/testSomesing/index.js && npx tsc",
+    "t": "npm run build'test' && node Typescript_Part_2/testSomesing/index"
   },
   "repository": {
     "type": "git",

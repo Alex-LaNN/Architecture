@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+  <%- include ('head') -%>
+  </head>
+  <body data-gr-c-s-loaded="true" class="">
+    <section id="header" class="header-wrapper">
+      <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="col-xs-5 col-sm-2 col-md-2 col-lg-2">
+              <div class="logo">
+                <a href="http://localhost:3000/" class="navbar-brand"><span
+                class="sh">Ш</span><span class="plus">++</span></a>
+              </div>
+            </div>
+            <div>
+              <div class="social">
+                <%- include ('social') -%>
+              </div>
+            </div>
+        </div>
+      </nav>
+    </section>
+    <section id="main" class="main-wrapper">
+      <div class="container">
+        <div id="content" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <% if (success) { %>
+            <p class="search-info font-weight-bold text-success" style="font-size: 1.5em; text-align: center;"><%= message%></p>
+          <% } else { %>
+            <p class="search-info font-weight-bold text-danger" style="font-size: 1.5em; text-align: center;"><%= message%></p>
+            <% } %>
+          <%- include ('books-list') -%>
+        </div>
+      </div>
+    </section>
+    <section id="footer" class="footer-wrapper">
+      <%- include ('footer') -%>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<section id="books">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Название книги</th>
+        <th>Авторы</th>
+        <th>Год выпуска</th>
+        <th>Кликов</th>
+        <th>Удалить</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (books.length) { %>
+        <% for (let i = 0; i < books.length; i++) { %>
+          <tr>
+            <td>
+              <a href="http://localhost:3000/book/<%= books[i].id %>">
+                <img src="http://localhost:3000/images/<%= books[i].image %>.jpg" alt="<%= books[i].name %>" style="width: 30px;">
+                <h4><%= books[i].name %></h4>
+              </a>
+            </td>
+            <td><%= books[i].authors %></td>
+            <td><%= books[i].year %></td>
+            <td><%= books[i].clicks %></td>
+            <% if(books[i].deleted) { %>
+              <td><a href="#" onclick="recoverBook('<%= books[i].id %>')">Попробовать восстановить</a></td>
+              <% } else { %>
+                <td><a href="#" onclick="deleteBook('<%= books[i].id %>')">Удалить</a></td>
+              <% } %>
+          </tr>
+        <% } %>
+      <% } else { %>
+        <tr>
+          <td colspan="3">Нет книг</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <ul class="pagination">
+  <% let pageUrl = "http://localhost:3000/admin/api/v1/?page=" %>
+  <% for (let i = 1; i <= totalPages; i++) { %>
+    <li class="<%= i === currentPage ? 'active' : '' %>">
+      <a href="<%= pageUrl + i %>"><%= i %></a>
+    </li>
+  <% } %>
+</ul>
+</section>

@@ -1,0 +1,18 @@
+<% if(books.length) { %>
+  <% books.forEach(({id, name, authors, image})=> { %>
+    <div data-book-id="<%=id %>" class="book_item col-xs-6 col-sm-3 col-md-2 col-lg-2">
+      <div class="book">
+        <a href="http://localhost:3000/book/<%= id %>"><img
+          src="http://localhost:3000/images/<%= image %>.jpg" alt="<%= name %>">
+            <div data-title="<%= name %>" class="blockI" style="height: 46px;">
+              <div data-book-title="<%= name %>" class="title size_text"><%= name %></div>
+              <div data-book-author="<%= authors %>" class="author"><%= authors %></div>
+            </div>
+        </a>
+        <a href="http://localhost:3000/book/<%= id %>">
+          <button type="button" class="detailsBtn btn-success">Почитать</button>
+        </a>
+      </div>
+    </div>
+  <% }) %>
+<% } %>

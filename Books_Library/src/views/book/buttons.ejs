@@ -1,0 +1,10 @@
+<% if(previous) { %>
+  <a href="http://localhost:3000/?<%= search ? "search=" + search + "&": "" %>offset=<%= offset - 10 %>">
+    <button id="btn-prev" class="nav-btn">Назад</button>
+  </a>
+<% } %>
+<% if(nextBooks) { %>
+  <a href="http://localhost:3000/?<%= search ? "search=" + search + "&": "" %>offset=<%= offset + 10 %>">
+    <button id="btn-next" class="nav-btn">Вперед</button>
+  </a>
+<% } %>

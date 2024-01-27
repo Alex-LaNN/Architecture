@@ -1,13 +1,11 @@
-import cors from "cors"
-import { getParams } from "./dotenv.js";
+import cors from "cors";
+import { host, port } from "../utils/params.js";
 
-const { HOST, PORT } = getParams();
-
- const config = {
-   origin: HOST! + PORT,
-   methods: "GET,POST,PUT,DELETE",
-   allowedHeaders: "Content-Type",
-   credentials: true,
+const config = {
+  origin: "http://" + host + ":" + port,
+  methods: "GET,POST,PUT,PUTCH,DELETE",
+  allowedHeaders: "Content-Type",
+  credentials: true,
 };
- 
-export default cors(config)
+
+export default cors(config);

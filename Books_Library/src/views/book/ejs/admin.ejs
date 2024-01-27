@@ -1,0 +1,132 @@
+<script>
+  // Отправление данных формы на сервер для добавления новой книги.
+  function addBook() {
+    // Список имен полей формы для отправления на сервер.
+    const formInputs = [
+      "name",
+      "year",
+      "pages",
+      "author1",
+      "author2",
+      "author3",
+      "author4",
+      "author5",
+      "description",
+    ];
+    // Получение объекта изображения.
+    const image = document.getElementById("imageFile");
+    // Создание объекта 'FormData' для отправки данных формы.
+    const formData = new FormData();
+    // Добавление изображения в объект 'FormData'.
+    formData.append("image", image.files[0]);
+    // Добавление всех остальных полей формы в объект 'FormData'.
+    formInputs.forEach((input) => {
+      formData.append(input, document.getElementById(input).value);
+    });
+    // Отправка POST-запроса на сервер с данными формы.
+    fetch(`http://localhost:3000/admin/api/v1/add_book`, {
+      method: "POST",
+      body: formData,
+    })
+    // Обработка успешного ответа от сервера.
+      .then((res) => res.json())
+      .then((response) => {
+        // Отображение модального окна с результатом операции.
+        showModal(response);
+      })
+      // Обработка ошибки запроса.
+      .catch((error) => {
+        console.error("39 Error:", error);
+      });
+  }
+
+  // Удаление книги.
+  function deleteBook(bookId) {
+    if (confirm("Вы уверены, что хотите удалить книгу?")) {
+      fetch(`http://localhost:3000/admin/api/v1/delete_book/${bookId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      // Обработка успешного ответа от сервера.
+        .then((res) => res.json())
+        .then((response) => {
+          // Отображение модального окна с результатом операции.
+          showModal(response);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }
+
+  // Восстановление книги.
+  function recoverBook(bookId) {
+    if (confirm("Хотите таки попробовать восстановить книгу?")) {
+      fetch(`http://localhost:3000/admin/api/v1/recover_book/${bookId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      // Обработка успешного ответа от сервера.
+        .then((res) => res.json())
+        .then((response) => {
+          // Отображение модального окна с результатом операции.
+          showModal(response);
+        });
+    }
+  }
+
+  // Отображение модального окна с результатом операции.
+  function showModal(response) {
+    // Идентификатор модального окна.
+    const modal = document.getElementById("successAlert");
+    // Элемент контента модального окна.
+    const modalContent = modal.querySelector(".modal-content");
+    // Элемент сообщения модального окна.
+    const modalMessage = modal.querySelector(".modal-message");
+    // Цвет фона модального окна в зависимости от результата операции.
+    if (response.success) {
+      modalContent.style.backgroundColor = "#d4edda";
+    } else {
+      modalContent.style.backgroundColor = "#f8d7da";
+    }
+    // Заполнение модального окна сообщением.
+    modalMessage.textContent = response.message;
+    // Отображение модального окна.
+    modal.style.display = "block";
+    // Закрытие модального окна через 2 секунды.
+    setTimeout(() => {
+      location.reload();
+      modal.style.display = "none";
+    }, 2000);
+  }
+
+  // Выход из системы ('Logout').
+  function logout() {
+    // Получение учетных данных из локального хранилища.
+    const value = localStorage.getItem("credentials");
+    // Отправление запроса на защищенный маршрут.
+    fetch("/logout", {
+      method: "GET",
+      headers: {
+        // Заголовок 'Authorization' с учетными данными.
+        Authorization: "Basic YWRtaW46cGFzcw==",
+      },
+    })
+      .then((response) => {
+        // Обработка успешного выхода.
+        if (response.ok) {
+          // Перенаправление на основную незащищенную страницу.
+          window.location.href = "/";
+        } else {
+          console.error(`error: ${response.statusText}`);
+        }
+      })
+      .catch((error) => {
+        console.error(`error: ${error}`);
+      });
+  }
+</script>

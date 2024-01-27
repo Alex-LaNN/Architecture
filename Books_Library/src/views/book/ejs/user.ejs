@@ -1,0 +1,26 @@
+<!-- <script>
+  // Отображение модального окна с результатом операции.
+  function showModal(response) {
+    // Идентификатор модального окна.
+    const modal = document.getElementById("successAlert");
+    // Элемент контента модального окна.
+    const modalContent = modal.querySelector(".modal-content");
+    // Элемент сообщения модального окна.
+    const modalMessage = modal.querySelector(".modal-message");
+    // Цвет фона модального окна в зависимости от результата операции.
+    if (response.success) {
+      modalContent.style.backgroundColor = "#d4edda";
+    } else {
+      modalContent.style.backgroundColor = "#f8d7da";
+    }
+    // Заполнение модального окна сообщением.
+    modalMessage.textContent = response.message;
+    // Отображение модального окна.
+    modal.style.display = "block";
+    // Закрытие модального окна через 2 секунды.
+    setTimeout(() => {
+      location.reload();
+      modal.style.display = "none";
+    }, 2000);
+  }
+</script> -->

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <%- include ('head') -%>
+</head>
+<body>
+  <section id="header" class="header-wrapper">
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-5 col-sm-2 col-md-2 col-lg-2">
+            <div class="logo">
+              <a href="http://localhost:3000/" class="navbar-brand"><span
+              class="sh">Ш</span><span class="plus">++</span></a>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-7 col-md-8 col-lg-8">
+            <div class="main-menu">
+              <%- include ('search-form') -%>
+            </div>
+          </div>
+          <div>
+            <div class="social">
+              <%- include ('social') -%>
+              <a href="/logout" class="logout">
+                <span class="bi bi-box-arrow-right bi-lg fa-sm" onclick="logout()" style="font-size: 2rem;"></span></i>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </section>
+  <section id="main" class="main-wrapper">
+    <div id="main_container">
+      <div id="table_container">
+        <%- include ('modal-window') -%>
+        <%- include ('admin-books-list') -%>
+      </div>
+      <h2 style="width: 50%; text-align: center;">Добавление книги</h2>
+      <div id="addBookForm" name="form" class="form" >
+        <%- include ('modal-window') -%>
+        <%- include ('form-add-book') -%>
+        <input style="background-color: forestgreen;" id="submit" class="addBookForm" type="submit" onclick="addBook()" value="Добавить">
+      </div>
+    </div>
+  </section>
+  <%- include('ejs/admin'); %>
+  </body>
+</html>

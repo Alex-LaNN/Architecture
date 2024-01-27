@@ -1,32 +1,28 @@
-import express from "express";
-//import dotenv from "dotenv";
-import cors from "cors";
-import morgan from "morgan";
-import * as dotenv from "dotenv"
-import { getParams } from "./modules/dotenv.js";
-import config from "./modules/corsConfig.js"
-import path from "path"
-import { fileURLToPath } from "url";
+import express, { Express } from "express";
+import cors from "./modules/corsConfig.js";
+import path from "path";
+import { router } from "./modules/router.js";
+import { initializeDB } from "./database/migrations/dataBase.js";
+import { port } from "./utils/params.js";
 
-dotenv.config();
-
-const env = getParams();
-const port = env.PORT
-const app = express();
-// To display requests incoming to the server in the console.
-app.use(morgan("dev"));
+// Создание экземпляра приложения Express.
+const app: Express = express();
 app.use(express.json());
+// Обработка 'URL-encoded' данных с расширенной поддержкой.
 app.use(express.urlencoded({ extended: true }));
-
-app.use(config)
-export const mainPath: string = path.dirname(
-  path.dirname(fileURLToPath(import.meta.url))
-);
-app.use(express.static(path.join(("./src/public"))));
-
-
+// Установка базовой директории для статических файлов.
+const basePath = process.cwd();
+app.use(express.static(path.join(basePath, "./src/views")));
+// Подключение конфигурации 'CORS'.
+app.use(cors);
+// Установка движка для шаблонов 'EJS'.
+app.set("view-engine", "ejs");
+// Подключение роутов приложения.
+app.use(router);
+// Инициализация базы данных.
+initializeDB();
 
 // Start the Express server on the specified port.
-const server = app.listen(port, (): void => {
+app.listen(port, (): void => {
   console.log(`Server is running on the port: ${port}`);
 });

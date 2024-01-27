@@ -10,16 +10,18 @@ export const storage = multer.diskStorage({
     const pathImage = path.join(process.cwd(), "./src/views/images");
     cb(null, pathImage);
   },
-  // Определение генерации имени файла для загружаемого изображения.
+  // Определение генерации уникального имени файла для загружаемого изображения.
   filename: async (req, file, cb) => {
+    // Генерация уникального имени файла.
     newFileName =
-      new Date().getTime() + "_" + Math.random().toString(36).substring(2, 9);
+      new Date().getTime() +
+      "_" +
+      Math.random().toString(36).substring(2, 9).replace(":", "");
     config.fileName = newFileName;
 
-    // Генерация нового имени файла с расширением .jpg
+    // Возвращение имени файла для записи.
     cb(null, newFileName + ".jpg");
   },
 });
 
-//export default fileName
 export const upload = multer({ storage });

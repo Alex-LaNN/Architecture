@@ -1,7 +1,8 @@
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
-dotenv.config()
-
+// Загрузка переменных окружения из файла .env
+dotenv.config();
+// Получение параметров из переменных окружения
 export const getEnvParams = () => {
   return {
     port: process.env.SERV_PORT,
@@ -13,4 +14,4 @@ export const getEnvParams = () => {
     dbName: process.env.MYSQL_DATABASE,
     dbHost: process.env.MYSQL_HOST,
   };
-}
+};

@@ -16,7 +16,8 @@ export async function getAdminPage(req: Request, res: Response) {
     +(req.query.page || 1) * adminLimitBooks - adminLimitBooks;
 
   try {
-    let books: Book[] = (
+    // Получение списка книг из базы данных.
+    const books: Book[] = (
       await dbConnection.query<Book[]>(SqlQuery.getBooksByPage, [
         offset,
         adminLimitBooks,
@@ -28,20 +29,22 @@ export async function getAdminPage(req: Request, res: Response) {
       await dbConnection.query<Book[]>(SqlQuery.getAllBooks)
     )[0].length;
 
-    // Есть ли еще книга для отображения на странице в данной группе книг.
+    // Нужно ли отображать следующую книгу на данной странице.
     const nextBooks: boolean = books.length > adminLimitBooks;
+    // Получение значения количества страниц, необходимых для отображения всех книг.
     const totalPages: number = Math.ceil(booksLength / adminLimitBooks);
 
     // Получение адреса отображаемой страницы.
-    const path = getViewPath("admin-page") + "";
+    const path: string = getViewPath("admin-page") + "";
 
-    // Добавление переменных в объект res.locals для передачи данных в представление.
+    // Добавление переменных в объект 'res.locals' для передачи данных в представление.
     res.locals = {
       ...res.locals,
       success: req.query.success === "true",
       message: req.query.message || "",
     };
 
+    // Отображаение страницы админа с передачей данных в шаблон.
     res.render(path, {
       books,
       booksLength,
@@ -58,8 +61,7 @@ export async function getAdminPage(req: Request, res: Response) {
 
 // Добавление новой книги в БД.
 export async function addBook(req: Request, res: Response) {
-  //  let fileName: number = 0;
-  //
+  // Добавление переменных в объект 'res.locals' для передачи данных в представление.
   res.locals = {
     ...res.locals,
     success: req.query.success === "false",
@@ -79,8 +81,8 @@ export async function addBook(req: Request, res: Response) {
       authors: getSecureString(Object.values(authorsData).join(", ")),
     };
 
-    // Определение имени изображения обложки.
-    let fileName: string = config.fileName;
+    // Получение сгенерированного имени изображения обложки добавляемой книги.
+    const fileName: string = config.fileName;
 
     // Добавление книги в БД.
     const result = await dbConnection.query(SqlQuery.addBook, [
@@ -92,7 +94,7 @@ export async function addBook(req: Request, res: Response) {
       fileName,
     ]);
 
-    // Проверка успешности добавления книги в БД.
+    // Формирование ответа сервера об успешности добавления книги в БД.
     if (
       Array.isArray(result) &&
       result[0] &&
@@ -137,7 +139,7 @@ export async function deleteBook(req: Request, res: Response) {
   }
 }
 
-// Восстановление книги.
+// Восстановление книги (отмена удаления в течении ожидания удаления).
 export async function recoverBook(req: Request, res: Response) {
   const id: number = +req.params.id;
   try {

@@ -77,7 +77,7 @@ async function searchBooks(searchString: string, numberSearchString: number) {
   }
 }
 
-// Генерация отображаемого сообщения о полученных результатах.
+// Генерация отображаемого сообщения о полученных результатах поиска.
 function getMessage(value: any): string {
   const count = value.result.length;
   const param = value.numberSearchString

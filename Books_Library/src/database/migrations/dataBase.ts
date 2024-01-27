@@ -38,20 +38,6 @@ async function insertData() {
   await insertDataIntoTables("books");
   await insertDataIntoTables("book_authors");
   await insertDataIntoTables("connections");
-
-  // const addition = {
-  //   books: insertDataIntoTable("books"),
-  //   authors: insertDataIntoTable("book_authors"),
-  //   connections: insertDataIntoTable("connections"),
-  // };
-
-  // // Итератор для перебора Promise-объектов.
-  // const iterator = Object.values(addition).entries();
-
-  // // Перебор Promise-объектов.
-  // for await (const [key, value] of iterator) {
-  //   await value;
-  // }
 }
 
 // Удаление БД.
@@ -77,12 +63,10 @@ async function insertDataIntoTables(tableName: string) {
       break;
     case "book_authors":
       createTable = Types.SqlQuery.createAuthorsTable;
-      // dataForTable = Types.SqlQuery.fillTheAuthorsTable;
       dataForTable = readFileSync(`./src/database/book_authors.sql`).toString();
       break;
     case "connections":
       createTable = Types.SqlQuery.createConnectionsTable;
-      // dataForTable = Types.SqlQuery.fillTheConnectionsTable;
       dataForTable = readFileSync(`./src/database/connections.sql`).toString();
       break;
     default:

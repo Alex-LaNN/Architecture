@@ -1,65 +1,66 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import { SqlQuery } from "../database/migrations/databaseQueries.js";
 import { dbConnection } from "../database/migrations/dataBase.js";
 import { getViewPath, limitBooksToDisplay } from "../utils/params.js";
 import { Book } from "../models/book.js";
 
-//
+// Получение страницы книги.
 export async function getBookPage(req: Request, res: Response) {
+  // Получение 'id' книги из параметров запроса с преобразованием его в число.
   const id: number = +req.params.id;
-  //console.log(`uC.11 - id: ${id}`);
   try {
-    await dbConnection.execute(SqlQuery.updateBookViewsById, [id]); // увеличение счетчика количества просмотров книги
+    // Увеличение счетчика количества просмотров книги.
+    await dbConnection.execute(SqlQuery.updateBookViewsById, [id]);
+    // Получение данные книги по ее 'id' из базы данных.
     const book: Book = (
       await dbConnection.query<Book[]>(SqlQuery.getBookById, [id])
     )[0][0];
+    // Получение пути к шаблону страницы книги.
     const path = getViewPath("book-page") + "";
-    //console.log(`path: ${path}`);
+    // Если книга найдена, отображение ее страницы.
     if (book) res.render(path, { book });
-    //if (book) res.render("./src/views/book/book-page.ejs", { book });
   } catch (error) {
     res.status(500).send({ error: `No book were found for this search.` });
   }
 }
 
-//
-export async function getAllBooksPage(
-  req: Request,
-  res: Response
-) {
-  let searchString: string = req.query.search + ""; //////////////////    обработать строку !!!!!!!!!!!!!!!!!!!!
+// Получение страницы со всеми книгами.
+export async function getAllBooksPage(req: Request, res: Response) {
+  // Получение строки поиска из запроса с преобразованием ее в строку.
+  let searchString: string = req.query.search + "";
+  // Получение смещения (offset) из запроса с преобразованием его в число.
   const offset: number = +(req.query.offset || 0);
+  // Определение наличия предыдущей страницы с книгами.
   const previous: boolean = offset > 0;
 
   try {
-    let books: Book[];
-    if (searchString) {
-      books = (
-        await dbConnection.query<Book[]>(SqlQuery.getAllBooks, [searchString])
-      )[0];
-    } else books = (await dbConnection.query<Book[]>(SqlQuery.getAllBooks))[0];
-
+    // Получение списка книг из базы данных.
+    let books: Book[] = (
+      await dbConnection.query<Book[]>(SqlQuery.getAllBooks)
+    )[0];
+    // Рассчет общего количества страниц.
     const pages: number = Math.ceil(books.length / limitBooksToDisplay);
+    // Определение количества книг на текущей странице.
     const countBooksOnPage: number = limitBooksToDisplay + offset;
-//    const nextBooks: boolean = books.length > limitBooksToDisplay + offset;
+    // Определение есть ли следующая страница с книгами для отображения.
     const nextBooks: boolean = books.length > countBooksOnPage;
 
-    //console.log(nextBooks)
-//    books = books.slice(offset, limitBooksToDisplay + offset);
+    // Получение списка книг для текущей страницы.
     books = books.slice(0, countBooksOnPage);
+    // Получение пути к шаблону страницы с отображаемыми книгами.
     const path: string = getViewPath("books-page") + "";
-    //books ? console.log("books заполнен") : console.log("books пустой");
 
+    // Отображение страницы со всеми книгами с передачей данных в шаблон.
     res.render(path, {
       books,
       pages,
       previous,
       nextBooks,
       offset,
-      search: searchString || "",
+      search: searchString,
     });
   } catch (error) {
-    res.status(500).send({ error: `No books were found.` });
+    res.status(500).send({ error: `No books to display.` });
   }
 }
 

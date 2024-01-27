@@ -1,4 +1,3 @@
-
 // Список SQL-запросов к БД.
 export enum SqlQuery {
   createBooksTable = `CREATE TABLE books (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL, year INT NOT NULL, pages INT NOT NULL, description VARCHAR(255), authors VARCHAR(255), image VARCHAR(255), views INT DEFAULT 0, clicks INT DEFAULT 0, deleted INT DEFAULT 0);`,
@@ -13,6 +12,7 @@ export enum SqlQuery {
     SELECT 2 UNION ALL
     SELECT 3 UNION ALL
     SELECT 4
+    SELECT 5
   ) numbers
   WHERE numbers.n <= LENGTH(authors) - LENGTH(REPLACE(authors, ',', '')) + 1;`,
   fillTheConnectionsTable = `INSERT INTO connections (bookId, authorId) SELECT books.id AS bookId, book_authors.id AS authorId FROM books JOIN book_authors ON books.authors LIKE CONCAT('%', book_authors.name, '%');`,

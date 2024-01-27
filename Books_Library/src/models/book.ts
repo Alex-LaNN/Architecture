@@ -5,9 +5,9 @@ export interface Book extends RowDataPacket {
   name: string;
   year: number;
   pages: number;
-  description: string; // описание
+  description: string;
   authors: string;
-  views: number; // количество просмотров
-  clicks: number; // количество кликов
-  deleted: number; // статус удаления
+  views: number;
+  clicks: number;
+  deleted: number;
 }

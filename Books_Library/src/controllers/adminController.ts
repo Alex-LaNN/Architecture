@@ -2,9 +2,10 @@ import { Request, Response } from "express";
 import { SqlQuery } from "../database/migrations/databaseQueries.js";
 import { dbConnection } from "../database/migrations/dataBase.js";
 import { getViewPath, limitBooksToDisplay } from "../utils/params.js";
-import getSecureString from "../utils/stringProcessing.js";
+import getSecureString from "../utils/utils.js";
 import { Book } from "../models/book.js";
 import { config } from "../modules/config.js";
+import * as Types from "../database/migrations/databaseQueries.js";
 
 // Генерация админ. страницы.
 export async function getAdminPage(req: Request, res: Response) {
@@ -71,6 +72,10 @@ export async function addBook(req: Request, res: Response) {
   try {
     // Получение данных о новой книге из тела запроса (из формы добавления новой книги).
     const { name, year, pages, description, ...authorsData } = req.body;
+    // Исключение пустых значений в полях ввода авторов для корректного отображения на странице.
+    const authors = Object.values(authorsData).filter(
+      (author) => author !== ""
+    );
 
     // Дополнительная обработка полученных данных для обеспечения безопасных запросов в БД.
     const checkedData = {
@@ -78,14 +83,14 @@ export async function addBook(req: Request, res: Response) {
       year: getSecureString(year),
       pages: getSecureString(pages),
       description: getSecureString(description),
-      authors: getSecureString(Object.values(authorsData).join(", ")),
+      authors: getSecureString(Object.values(authors).join(", ")),
     };
 
     // Получение сгенерированного имени изображения обложки добавляемой книги.
     const fileName: string = config.fileName;
 
     // Добавление книги в БД.
-    const result = await dbConnection.query(SqlQuery.addBook, [
+    const updateBooksTable = await dbConnection.query(SqlQuery.addNewBook, [
       checkedData.name,
       checkedData.year,
       checkedData.pages,
@@ -94,13 +99,27 @@ export async function addBook(req: Request, res: Response) {
       fileName,
     ]);
 
-    // Формирование ответа сервера об успешности добавления книги в БД.
+    //
     if (
-      Array.isArray(result) &&
-      result[0] &&
-      "affectedRows" in result[0] &&
-      result[0].affectedRows === 1
+      Array.isArray(updateBooksTable) &&
+      updateBooksTable[0] &&
+      "affectedRows" in updateBooksTable[0] &&
+      updateBooksTable[0].affectedRows === 1
     ) {
+      // Добавление новых данных в 'book_authors'.
+      const newBookId: number = updateBooksTable[0].insertId;
+//      console.log(`aC 111: newBookId: ${newBookId}`); ///////////////////////////////////////////
+      try {
+        await dbConnection.execute(Types.SqlQuery.addNewAuthors, [newBookId]);
+//        console.log(`aC 114: Добавление новых данных в 'book_authors'...`); ///////////////////////
+      } catch (error) {
+        console.error(
+          `aC 117: Ошибка при добавлении новых данных в 'book_authors': ${error}`
+        );
+      }
+      // Обновление таблицы 'connections'.
+      await dbConnection.execute(Types.SqlQuery.uodateConnections, [newBookId]);
+//      console.log(`aC 122: 'connections' обновлена.`); /////////////////////////////////
       res.json({
         success: true,
         message: "Книга добавлена успешно.",
@@ -115,7 +134,7 @@ export async function addBook(req: Request, res: Response) {
     res.status(500).send({
       error: `${error}`,
       success: false,
-      message: "Error adding a book!",
+      message: "Error adding a new book! The database may be incorrect.",
     });
   }
 }

@@ -13,5 +13,21 @@ export const getEnvParams = () => {
     dbPass: process.env.MYSQL_PASSWORD,
     dbName: process.env.MYSQL_DATABASE,
     dbHost: process.env.MYSQL_HOST,
+    dbPort: process.env.MTSQL_PORT,
   };
+};
+
+//
+export const sqlConnectionConfig = {
+  host: process.env.DB_HOST,
+  user: String(process.env.DB_USER),
+  port: Number(process.env.DB_PORT),
+  password: String(process.env.DB_PASS),
+  database: String(process.env.DB_NAME),
+};
+
+//
+export const unsafeRequests = {
+  safeOff: process.env.Disable_safe_update_mode,
+  safeOn: process.env.Enable_safe_update_mode,
 };

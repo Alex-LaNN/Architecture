@@ -1,6 +1,7 @@
 import multer from "multer";
 import path from "path";
 import { config } from "../modules/config";
+import { getTime } from "./utils";
 
 let newFileName: string;
 // Объявление объекта `storage` для хранения загруженных изображений.
@@ -14,7 +15,7 @@ export const storage = multer.diskStorage({
   filename: async (req, file, cb) => {
     // Генерация уникального имени файла.
     newFileName =
-      new Date().getTime() +
+      getTime() +
       "_" +
       Math.random().toString(36).substring(2, 9).replace(":", "");
     config.fileName = newFileName;

@@ -2,7 +2,13 @@
 export enum SqlQuery {
   createBooksTable = `CREATE TABLE books (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL, year INT NOT NULL, pages INT NOT NULL, description VARCHAR(255), authors VARCHAR(255), image VARCHAR(255), views INT DEFAULT 0, clicks INT DEFAULT 0, deleted INT DEFAULT 0);`,
   createAuthorsTable = `CREATE TABLE book_authors (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE);`,
-  createConnectionsTable = `CREATE TABLE connections (bookId INT, authorId INT, FOREIGN KEY (authorId) REFERENCES book_authors(id), FOREIGN KEY (bookId) REFERENCES books(id), PRIMARY KEY(bookId, authorId)) ENGINE=INNODB;`,
+  createConnectionsTable = `CREATE TABLE connections (
+  bookId INT,
+  authorId INT,
+  FOREIGN KEY (bookId) REFERENCES books(id) ON DELETE CASCADE,
+  FOREIGN KEY (authorId) REFERENCES book_authors(id),
+  PRIMARY KEY(bookId, authorId)
+  ) ENGINE=INNODB;`,
   fillTheAuthorsTable = `INSERT IGNORE INTO book_authors (name)
   SELECT
     SUBSTRING_INDEX(SUBSTRING_INDEX(authors, ',', numbers.n), ',', -1) name
@@ -11,7 +17,7 @@ export enum SqlQuery {
     SELECT 1 n UNION ALL
     SELECT 2 UNION ALL
     SELECT 3 UNION ALL
-    SELECT 4
+    SELECT 4 UNION ALL
     SELECT 5
   ) numbers
   WHERE numbers.n <= LENGTH(authors) - LENGTH(REPLACE(authors, ',', '')) + 1;`,
@@ -28,19 +34,39 @@ export enum SqlQuery {
   getAllBooks = `SELECT books.* FROM books;`,
   getBooksByPage = `SELECT * FROM books LIMIT ?, ?;`,
   findBooksByName = `SELECT * FROM books WHERE name LIKE CONCAT('%', ?, '%');`,
-  findBooksByNames = `SELECT * FROM books WHERE name LIKE CONCAT('%', ?, '%') OR EXISTS (
-        SELECT 1
-        FROM book_authors
-        WHERE 
-            book_authors.name LIKE CONCAT('%', ?, '%') AND
-            book_authors.name = books.authors
-    );`,
+  findBooksByNames = `SELECT * FROM books WHERE name LIKE CONCAT('%', ?, '%') 
+  OR EXISTS (
+    SELECT 1
+    FROM book_authors
+    WHERE 
+        book_authors.name LIKE CONCAT('%', ?, '%') AND
+        book_authors.name = books.authors
+  );`,
   findBooksByNumber = `SELECT * FROM books WHERE (SELECT name FROM book_authors WHERE id = ?) LIKE books.authors OR year = ?;`,
   isItSortedById = `SELECT COUNT(*) FROM books WHERE id < (SELECT id FROM books ORDER BY id LIMIT 1);`, // проверка сортировки по полю 'id'.
   getBookById = `SELECT * FROM books WHERE id = ?;`,
   updateBookViewsById = `UPDATE books SET views = views + 1 WHERE id = ?;`,
-  addBook = `INSERT INTO books (name, year, pages, description, authors, image, views, clicks, deleted) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0);`,
-  getLastId = `SELECT MAX(id) AS last_id FROM books;`,
+  getLastId = `SELECT id FROM books ORDER BY id DESC LIMIT 1;`,
   incrementWantedById = `UPDATE books SET clicks = clicks + 1 WHERE id = ?;`,
-  getBooksForDelete = `DELETE FROM books WHERE deleted = 1;`,
+  addNewBook = `INSERT INTO books (name, year, pages, description, authors, image, views, clicks, deleted) VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0);`,
+  addNewAuthors = `INSERT INTO book_authors (name)
+  SELECT DISTINCT TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(authors, ',', numbers.n), ',', -1)) name
+  FROM books
+  CROSS JOIN (
+      SELECT 1 n UNION ALL
+      SELECT 2 UNION ALL
+      SELECT 3 UNION ALL
+      SELECT 4
+  ) numbers
+  WHERE numbers.n <= LENGTH(authors) - LENGTH(REPLACE(authors, ',', '')) + 1
+    AND books.id = ?
+    AND TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(authors, ',', numbers.n), ',', -1)) NOT IN (SELECT name FROM book_authors);`,
+  uodateConnections = `INSERT INTO connections (bookId, authorId)
+  SELECT books.id AS bookId, book_authors.id AS authorId
+  FROM books
+  JOIN book_authors ON books.authors LIKE CONCAT('%', book_authors.name, '%')
+  WHERE books.id = ?;`,
+  getBookIdsMurkedForDeletion = `SELECT books.id FROM books WHERE deleted = 1;`,
+  removeUnusedAuthorsByID = `DELETE FROM book_authors WHERE id NOT IN (SELECT DISTINCT authorId FROM connections);`,
+  getImageNameById = `SELECT books.image FROM books WHERE id = ?;`,
 }

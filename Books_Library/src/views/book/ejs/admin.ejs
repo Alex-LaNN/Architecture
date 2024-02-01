@@ -1,43 +1,61 @@
 <script>
   // Отправление данных формы на сервер для добавления новой книги.
   function addBook() {
-    // Список имен полей формы для отправления на сервер.
-    const formInputs = [
-      "name",
-      "year",
-      "pages",
-      "author1",
-      "author2",
-      "author3",
-      "author4",
-      "author5",
-      "description",
-    ];
-    // Получение объекта изображения.
-    const image = document.getElementById("imageFile");
-    // Создание объекта 'FormData' для отправки данных формы.
-    const formData = new FormData();
-    // Добавление изображения в объект 'FormData'.
-    formData.append("image", image.files[0]);
-    // Добавление всех остальных полей формы в объект 'FormData'.
-    formInputs.forEach((input) => {
-      formData.append(input, document.getElementById(input).value);
-    });
-    // Отправка POST-запроса на сервер с данными формы.
-    fetch(`http://localhost:3000/admin/api/v1/add_book`, {
-      method: "POST",
-      body: formData,
-    })
-    // Обработка успешного ответа от сервера.
-      .then((res) => res.json())
-      .then((response) => {
-        // Отображение модального окна с результатом операции.
-        showModal(response);
-      })
-      // Обработка ошибки запроса.
-      .catch((error) => {
-        console.error("39 Error:", error);
+    const checkedAllFieldsOk = true;
+    // Перебор всех обязательных для заполнения полей формы.
+    const requiredFields = document.querySelectorAll(
+      "input[required], textarea[required]"
+    );
+    // Проверка - заполнены ли все поля.
+    for (const field of requiredFields) {
+      if (field.value === "") {
+        // Отображение сообщения о необходимости заполнить пустое поле.
+        alert(
+          `Поле "${field.name}" обязательно для заполнения. Пожалуйста заполните его перед добавлением новой книги.`
+        );
+        checkedAllFieldsOk = false;
+        break;
+      }
+    }
+    if (checkedAllFieldsOk) {
+      // Список имен полей формы для отправления на сервер.
+      const formInputs = [
+        "name",
+        "year",
+        "pages",
+        "author1",
+        "author2",
+        "author3",
+        "author4",
+        "author5",
+        "description",
+      ];
+      // Получение объекта изображения.
+      const image = document.getElementById("imageFile");
+      // Создание объекта 'FormData' для отправки данных формы.
+      const formData = new FormData();
+      // Добавление изображения в объект 'FormData'.
+      formData.append("image", image.files[0]);
+      // Добавление всех остальных полей формы в объект 'FormData'.
+      formInputs.forEach((input) => {
+        formData.append(input, document.getElementById(input).value);
       });
+      // Отправка POST-запроса на сервер с данными формы.
+      fetch(`http://localhost:3000/admin/api/v1/add_book`, {
+        method: "POST",
+        body: formData,
+      })
+        // Обработка успешного ответа от сервера.
+        .then((res) => res.json())
+        .then((response) => {
+          // Отображение модального окна с результатом операции.
+          showModal(response);
+        })
+        // Обработка ошибки запроса.
+        .catch((error) => {
+          console.error("39 Error:", error);
+        });
+    }
   }
 
   // Удаление книги.
@@ -49,7 +67,7 @@
           "Content-Type": "application/json",
         },
       })
-      // Обработка успешного ответа от сервера.
+        // Обработка успешного ответа от сервера.
         .then((res) => res.json())
         .then((response) => {
           // Отображение модального окна с результатом операции.
@@ -70,7 +88,7 @@
           "Content-Type": "application/json",
         },
       })
-      // Обработка успешного ответа от сервера.
+        // Обработка успешного ответа от сервера.
         .then((res) => res.json())
         .then((response) => {
           // Отображение модального окна с результатом операции.

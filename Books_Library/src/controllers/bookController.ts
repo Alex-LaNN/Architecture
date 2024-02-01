@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { SqlQuery } from "../database/migrations/databaseQueries.js";
 import { dbConnection } from "../database/migrations/dataBase.js";
 import { getViewPath } from "../utils/params.js";
-import getSecureString from "../utils/stringProcessing.js";
+import getSecureString from "../utils/utils.js";
 import { Book } from "../models/book.js";
 
 // Поиск книг с использованием поисковой строки.

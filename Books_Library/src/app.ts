@@ -4,7 +4,10 @@ import path from "path";
 import { router } from "./modules/router.js";
 import { initializeDB } from "./database/migrations/dataBase.js";
 import { port } from "./utils/params.js";
+import { startCron } from "./models/cron.js";
 
+// Запуск запланированных задач.
+startCron();
 // Создание экземпляра приложения Express.
 const app: Express = express();
 app.use(express.json());

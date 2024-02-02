@@ -1,15 +1,15 @@
 <script>
-  // Отправление данных формы на сервер для добавления новой книги.
+  // Submitting form data to the server to add a new book.
   function addBook() {
     const checkedAllFieldsOk = true;
-    // Перебор всех обязательных для заполнения полей формы.
+    // Enumeration of all required form fields.
     const requiredFields = document.querySelectorAll(
       "input[required], textarea[required]"
     );
-    // Проверка - заполнены ли все поля.
+    // Check to see if all fields are filled in.
     for (const field of requiredFields) {
       if (field.value === "") {
-        // Отображение сообщения о необходимости заполнить пустое поле.
+        // Display a message asking you to fill in an empty field.
         alert(
           `Поле "${field.name}" обязательно для заполнения. Пожалуйста заполните его перед добавлением новой книги.`
         );
@@ -18,7 +18,7 @@
       }
     }
     if (checkedAllFieldsOk) {
-      // Список имен полей формы для отправления на сервер.
+      // List of form field names to be sent to the server.
       const formInputs = [
         "name",
         "year",
@@ -30,35 +30,34 @@
         "author5",
         "description",
       ];
-      // Получение объекта изображения.
+      // Retrieving an image object.
       const image = document.getElementById("imageFile");
-      // Создание объекта 'FormData' для отправки данных формы.
+      // Create a 'FormData' object to submit form data.
       const formData = new FormData();
-      // Добавление изображения в объект 'FormData'.
+      // Adding an image to the 'FormData' object.
       formData.append("image", image.files[0]);
-      // Добавление всех остальных полей формы в объект 'FormData'.
+      // Adding all other form fields to the 'FormData' object.
       formInputs.forEach((input) => {
         formData.append(input, document.getElementById(input).value);
       });
-      // Отправка POST-запроса на сервер с данными формы.
+      // Sending a POST request to the server with form data.
       fetch(`http://localhost:3000/admin/api/v1/add_book`, {
         method: "POST",
         body: formData,
       })
-        // Обработка успешного ответа от сервера.
+        // Handling a successful response from the server.
         .then((res) => res.json())
         .then((response) => {
-          // Отображение модального окна с результатом операции.
+          // Display a modal window with the result of the operation.
           showModal(response);
         })
-        // Обработка ошибки запроса.
         .catch((error) => {
           console.error("39 Error:", error);
         });
     }
   }
 
-  // Удаление книги.
+  // Deleting a book.
   function deleteBook(bookId) {
     if (confirm("Вы уверены, что хотите удалить книгу?")) {
       fetch(`http://localhost:3000/admin/api/v1/delete_book/${bookId}`, {
@@ -67,10 +66,10 @@
           "Content-Type": "application/json",
         },
       })
-        // Обработка успешного ответа от сервера.
+        // Handling a successful response from the server.
         .then((res) => res.json())
         .then((response) => {
-          // Отображение модального окна с результатом операции.
+          // Display a modal window with the result of the operation.
           showModal(response);
         })
         .catch((error) => {
@@ -79,7 +78,7 @@
     }
   }
 
-  // Восстановление книги.
+  // Cancel deletion of a book.
   function recoverBook(bookId) {
     if (confirm("Хотите таки попробовать восстановить книгу?")) {
       fetch(`http://localhost:3000/admin/api/v1/recover_book/${bookId}`, {
@@ -88,56 +87,56 @@
           "Content-Type": "application/json",
         },
       })
-        // Обработка успешного ответа от сервера.
+        // Handling a successful response from the server.
         .then((res) => res.json())
         .then((response) => {
-          // Отображение модального окна с результатом операции.
+          // Display a modal window with the result of the operation.
           showModal(response);
         });
     }
   }
 
-  // Отображение модального окна с результатом операции.
+  // Display a modal window with the result of the operation.
   function showModal(response) {
-    // Идентификатор модального окна.
+    // ID of the modal window.
     const modal = document.getElementById("successAlert");
-    // Элемент контента модального окна.
+    // Modal window content element.
     const modalContent = modal.querySelector(".modal-content");
-    // Элемент сообщения модального окна.
+    // Modal window message element.
     const modalMessage = modal.querySelector(".modal-message");
-    // Цвет фона модального окна в зависимости от результата операции.
+    // The background color of the modal window depending on the result of the operation.
     if (response.success) {
       modalContent.style.backgroundColor = "#d4edda";
     } else {
       modalContent.style.backgroundColor = "#f8d7da";
     }
-    // Заполнение модального окна сообщением.
+    // Fill the modal window with a message.
     modalMessage.textContent = response.message;
-    // Отображение модального окна.
+    // Display a modal window.
     modal.style.display = "block";
-    // Закрытие модального окна через 2 секунды.
+    // Closing the modal window after 2 seconds.
     setTimeout(() => {
       location.reload();
       modal.style.display = "none";
     }, 2000);
   }
 
-  // Выход из системы ('Logout').
+  // Logout..
   function logout() {
-    // Получение учетных данных из локального хранилища.
+    // Retrieving credentials from local storage.
     const value = localStorage.getItem("credentials");
-    // Отправление запроса на защищенный маршрут.
+    // Sending a request to a protected route.
     fetch("/logout", {
       method: "GET",
       headers: {
-        // Заголовок 'Authorization' с учетными данными.
+        // 'Authorization' header with credentials.
         Authorization: "Basic YWRtaW46cGFzcw==",
       },
     })
       .then((response) => {
-        // Обработка успешного выхода.
+        // Handling successful exit.
         if (response.ok) {
-          // Перенаправление на основную незащищенную страницу.
+          // Redirect to the main unprotected page.
           window.location.href = "/";
         } else {
           console.error(`error: ${response.statusText}`);

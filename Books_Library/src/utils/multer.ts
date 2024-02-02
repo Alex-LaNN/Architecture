@@ -4,23 +4,23 @@ import { config } from "../modules/config";
 import { getTime } from "./utils";
 
 let newFileName: string;
-// Объявление объекта `storage` для хранения загруженных изображений.
+// Declaration of a `storage` object to store downloaded images.
 export const storage = multer.diskStorage({
-  // Определение места для загрузки изображений.
+  // Defining a location to upload images.
   destination: (req, file, cb) => {
     const pathImage = path.join(process.cwd(), "./src/views/images");
     cb(null, pathImage);
   },
-  // Определение генерации уникального имени файла для загружаемого изображения.
+  // Define the generation of a unique file name for the uploaded image.
   filename: async (req, file, cb) => {
-    // Генерация уникального имени файла.
+    // Generating a unique file name.
     newFileName =
       getTime() +
       "_" +
       Math.random().toString(36).substring(2, 9).replace(":", "");
     config.fileName = newFileName;
 
-    // Возвращение имени файла для записи.
+    // Return the file name to write to.
     cb(null, newFileName + ".jpg");
   },
 });

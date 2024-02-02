@@ -7,17 +7,17 @@ import { Book } from "../models/book.js";
 import { config } from "../modules/config.js";
 import * as Types from "../database/migrations/databaseQueries.js";
 
-// Генерация админ. страницы.
+// Generating the admin page.
 export async function getAdminPage(req: Request, res: Response) {
-  // Получение значения количества книг в отображаемой группе на админ. странице.
+  // Getting the number of books in the displayed group on the admin. page.
   const adminLimitBooks: number =
     limitBooksToDisplay < 20 ? limitBooksToDisplay : 5;
-  // Значение id книги, с которой начинается отображение группы книг.
+  // The id value of the book from which the book group display begins.
   const offset: number =
     +(req.query.page || 1) * adminLimitBooks - adminLimitBooks;
 
   try {
-    // Получение списка книг из базы данных.
+    // Getting a list of books from the database.
     const books: Book[] = (
       await dbConnection.query<Book[]>(SqlQuery.getBooksByPage, [
         offset,
@@ -25,27 +25,27 @@ export async function getAdminPage(req: Request, res: Response) {
       ])
     )[0];
 
-    // Получение значения общего количества книг, находящихся в БД.
+    // Getting the total number of books in the database.
     const booksLength: number = (
       await dbConnection.query<Book[]>(SqlQuery.getAllBooks)
     )[0].length;
 
-    // Будет ли отображаться следующая книга на данной странице.
+    // Whether the next book will be displayed on this page.
     const nextBooks: boolean = books.length > adminLimitBooks;
-    // Получение значения количества страниц, необходимых для отображения всех книг.
+    // Gets the number of pages required to display all books.
     const totalPages: number = Math.ceil(booksLength / adminLimitBooks);
 
-    // Получение адреса отображаемой страницы.
+    // Getting the address of the displayed page.
     const path: string = getViewPath("admin-page") + "";
 
-    // Добавление переменных в объект 'res.locals' для передачи данных в представление.
+    // Add variables to the 'res.locals' object to pass data to the view.
     res.locals = {
       ...res.locals,
       success: req.query.success === "true",
       message: req.query.message || "",
     };
 
-    // Отображаение страницы админа с передачей данных в шаблон.
+    // Displaying the admin page with data transfer to the template.
     res.render(path, {
       books,
       booksLength,
@@ -60,9 +60,9 @@ export async function getAdminPage(req: Request, res: Response) {
   }
 }
 
-// Добавление новой книги в БД.
+// Add a new book to the database.
 export async function addBook(req: Request, res: Response) {
-  // Добавление переменных в объект 'res.locals' для передачи данных в представление.
+  // Add variables to the 'res.locals' object to pass data to the view.
   res.locals = {
     ...res.locals,
     success: req.query.success === "false",
@@ -70,14 +70,14 @@ export async function addBook(req: Request, res: Response) {
   };
 
   try {
-    // Получение данных о новой книге из тела запроса (из формы добавления новой книги).
+    // Receiving data about a new book from the request body (from the form for adding a new book).
     const { name, year, pages, description, ...authorsData } = req.body;
-    // Исключение пустых значений в полях ввода авторов для корректного отображения на странице.
+    // Excluding empty values in author input fields for correct display on the page.
     const authors = Object.values(authorsData).filter(
       (author) => author !== ""
     );
 
-    // Дополнительная обработка полученных данных для обеспечения безопасных запросов в БД.
+    // Additional processing of received data to ensure secure queries in the database.
     const checkedData = {
       name: getSecureString(name),
       year: getSecureString(year),
@@ -86,10 +86,10 @@ export async function addBook(req: Request, res: Response) {
       authors: getSecureString(Object.values(authors).join(", ")),
     };
 
-    // Получение сгенерированного имени изображения для добавляемой книги.
+    // Get the generated image name for the book being added.
     const fileName: string = config.fileName;
 
-    // Добавление книги в БД.
+    // Add a book to the database.
     const updateBooksTable = await dbConnection.query(SqlQuery.addNewBook, [
       checkedData.name,
       checkedData.year,
@@ -99,14 +99,14 @@ export async function addBook(req: Request, res: Response) {
       fileName,
     ]);
 
-    // Успешность обновления строки в таблице books.
+    // Successful update of a row in the books table.
     if (
       Array.isArray(updateBooksTable) &&
       updateBooksTable[0] &&
       "affectedRows" in updateBooksTable[0] &&
       updateBooksTable[0].affectedRows === 1
     ) {
-      // Добавление новых данных в 'book_authors'.
+      // Adding new data to 'book_authors'.
       const newBookId: number = updateBooksTable[0].insertId;
       try {
         await dbConnection.execute(Types.SqlQuery.addNewAuthors, [newBookId]);
@@ -115,7 +115,7 @@ export async function addBook(req: Request, res: Response) {
           `aC 115: Ошибка при добавлении новых данных в 'book_authors': ${error}`
         );
       }
-      // Обновление таблицы 'connections'.
+      // Update table 'connections'.
       await dbConnection.execute(Types.SqlQuery.uodateConnections, [newBookId]);
       res.json({
         success: true,
@@ -136,11 +136,11 @@ export async function addBook(req: Request, res: Response) {
   }
 }
 
-// Маркирование книги как 'удаляемая'.
+// Marking a book for removal.
 export async function markForDeleteBook(req: Request, res: Response) {
   const id: number = +req.params.id;
   try {
-    // Время, по достижению которого книга будет удалена.
+    // The time after which the book will be deleted.
     //    const timeToDelete: number = getTime() + 24 * 60 * 60 * 1000; // 1 день по условию...
     const timeToDelete: number = getTime() + 300000; // 5 минут
     await dbConnection.execute(SqlQuery.markForDeletion, [timeToDelete, id]);
@@ -158,7 +158,7 @@ export async function markForDeleteBook(req: Request, res: Response) {
   }
 }
 
-// Восстановление книги (отмена удаления в течении ожидания удаления).
+// Book restoration (cancel deletion while waiting for deletion).
 export async function recoverBook(req: Request, res: Response) {
   const id: number = +req.params.id;
   try {
@@ -176,12 +176,12 @@ export async function recoverBook(req: Request, res: Response) {
   }
 }
 
-// Выполнение выхода из системы.
+// Execute a logout.
 export async function getLogout(req: Request, res: Response) {
-  // Получение значения заголовка Authorization.
+  // Getting the value of the 'Authorization' header.
   const authorization = req.get("Authorization");
 
-  // Удаление 'cookie' с именем 'Authorization'.
+  // Removing 'cookie' named 'Authorization'.
   if (authorization) {
     res.cookie("Authorization", "", {
       expires: new Date(0),
@@ -189,8 +189,8 @@ export async function getLogout(req: Request, res: Response) {
       secure: true,
     });
   }
-  // Очищение заголовка 'Authorization' для выхода из аутентификации.
+  // Clear the 'Authorization' header to exit authentication.
   res.setHeader("WWW-Authenticate", 'Basic realm="Secure Area"');
-  // Перенаправление пользователя на главную незащищенную страницу.
+  // Redirecting the user to the main unsecured page.
   res.redirect("/");
 }

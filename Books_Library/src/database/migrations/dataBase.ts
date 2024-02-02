@@ -6,7 +6,7 @@ import { sqlConnectionConfig, unsafeRequests } from "../../modules/dotenv.js";
 import { getBasePath, getCurrentTime, getTime } from "../../utils/utils.js";
 import path from "path";
 
-// Создание пула соединений с базой данных.
+// Create a pool of database connections.
 export const dbConnection = mysql
   .createPool({
     host: process.env.DB_HOST,
@@ -18,33 +18,33 @@ export const dbConnection = mysql
   })
   .promise();
 
-// Инициализация БД.
+// Database initialization.
 export async function initializeDB() {
-  // Проверка наличия...
+  // Availability check...
   const tablesExist = await Promise.all([
     dbConnection.query<RowDataPacket[]>(Types.SqlQuery.checkBooksTable),
     dbConnection.query<RowDataPacket[]>(Types.SqlQuery.checkAuthorsTable),
     dbConnection.query<RowDataPacket[]>(Types.SqlQuery.checkConnectionsTable),
   ]);
-  // Проверка отсутствия таблицы.
+  // Checking for missing table.
   const anyTableMissing = tablesExist.some(
     ([table]) => !table || table.length === 0
   );
-  // Создание БД.
+  // Creating a database.
   if (anyTableMissing) {
     await deleteTables();
     insertData();
   }
 }
 
-// Создание и заполнение таблиц.
+// Creating and filling tables.
 async function insertData() {
   await insertDataIntoTables("books");
   await insertDataIntoTables("book_authors");
   await insertDataIntoTables("connections");
 }
 
-// Удаление БД.
+// Deleting a database.
 export async function deleteTables() {
   const queries = [
     Types.SqlQuery.deleteConnectionsTable,
@@ -56,7 +56,7 @@ export async function deleteTables() {
   }
 }
 
-// Ссоздание и заполнение таблиц.
+// Creating and filling tables.
 async function insertDataIntoTables(tableName: string) {
   let dataForTable: string;
   let createTable: string;
@@ -85,13 +85,13 @@ async function insertDataIntoTables(tableName: string) {
   }
 }
 
-// Создание резервной копии БД.
+// Creating a database backup.
 export async function getDataBaseDump() {
-  // Формирование имени файла резервной копии.
+  // Formation of the backup file name.
   const newDumpName: string = getTime() + "_dump.sql";
-  // Запись имени файла для хранения последнего дампа БД.
+  // Recording the file name of the latest database dump.
   writeFileSync("src/database/dumps/lastDump.txt", newDumpName);
-  // Получение полного пути к файлу резервной копии.
+  // Getting the full path to the backup file.
   const pathToNewFile: string = path.join(
     getBasePath(),
     "src",
@@ -99,7 +99,7 @@ export async function getDataBaseDump() {
     "dumps",
     newDumpName
   );
-  // Выполнение резервного копирования БД с помощью 'mysqldump'.
+  // Performing a database backup using 'mysqldump'.
   mysqldump({
     connection: sqlConnectionConfig,
     dumpToFile: pathToNewFile,
@@ -114,22 +114,22 @@ export async function getDataBaseDump() {
     );
 }
 
-// Удаление книг из БД, отмеченных удаляемыми.
+// Removing books from the database that are marked as 'removable'.
 export async function removeMarkedBooks() {
   try {
-    // Получение списка книг, отмеченных 'на удаление'.
+    // Getting a list of marked books.
     const bookIdsForDelete = (
       await dbConnection.query<RowDataPacket[]>(
         Types.SqlQuery.getBookIdsMurkedForDeletion
       )
     )[0].map((obj: RowDataPacket) => obj.id);
 
-    // Список 'книг на удаление' не пустой.
+    // The list of 'books to delete' is not empty.
     if (bookIdsForDelete && bookIdsForDelete.length > 0) {
-      // Удаление каждой книги, отмеченной как 'удаляемая'.
+      // Deleting each book marked as 'to be deleted'.
       for (const bookId of bookIdsForDelete) {
         try {
-          // Удаление книги и всех ее связей.
+          // Deleting a book and all its connections.
           await removeBook(bookId);
         } catch (error) {
           console.log(
@@ -142,23 +142,23 @@ export async function removeMarkedBooks() {
     console.error("dB 142: Error removing marked books:", error);
   }
 
-  // Удаление книги и всех ее связей.
+  // Deleting a book and all its connections.
   async function removeBook(bookId: number) {
     try {
-      // Получение значения времени, в которое книга должна быть удалена.
+      // Getting the time value at which the workbook should be deleted.
       const requestData: any = (
         await dbConnection.query(Types.SqlQuery.getRemovalTimeById, [bookId])
       )[0];
       const removalTime = requestData[0].removal_time;
-      // Флаг удаления книги.
+      // Book deletion flag.
       const forRemoval: boolean = removalTime < getTime();
-      // Удаление книги и всех ее связей.
+      // Deleting a book and all its connections.
       if (forRemoval) {
-        // Удаление обложки книги.
+        // Removing a book cover.
         await deleteBookImage(bookId);
-        // Удаление самой книги.
+        // Deleting the book itself.
         await dbConnection.execute(Types.SqlQuery.deleteBookById, [bookId]);
-        // Удаление данных из таблицы 'book_authors', связанных с удаленной книгой.
+        // Removing data from the 'book_authors' table associated with the deleted book.
         await deleteAuthorsAfterDeleteBook();
         console.log(`dB 163: Book with id: ${bookId} has been deleted.`);
       }
@@ -167,15 +167,15 @@ export async function removeMarkedBooks() {
     }
   }
 
-  // Удаление изображения книги.
+  // Removing the book image.
   async function deleteBookImage(bookId: number) {
     try {
-      // Получение имени изображения из БД.
+      // Getting the image name from the database.
       const requestData: any = (
         await dbConnection.query(Types.SqlQuery.getImageNameById, [bookId])
       )[0];
       const imageName = requestData[0].image;
-      // Формирование пути к файлу изображения.
+      // Formation of the path to the image file.
       const pathToDeleteImage: string = path.join(
         getBasePath(),
         "src",
@@ -183,7 +183,7 @@ export async function removeMarkedBooks() {
         "images",
         imageName + ".jpg"
       );
-      // Удаление файла изображения.
+      // Deleting an image file.
       unlink(pathToDeleteImage, (error) => {
         if (error) {
           console.error(`dB 189: Ошибка удаления изображения: ${error}`);
@@ -196,29 +196,29 @@ export async function removeMarkedBooks() {
     }
   }
 
-  // Удаление данных из таблицы 'book_authors'.
+  // Removing data from the 'book_authors' table.
   async function deleteAuthorsAfterDeleteBook() {
     try {
-      // Попытка выполнить запрос на удаление данных.
+      // Execute a request to delete data.
       await dbConnection.execute(Types.SqlQuery.removeUnusedAuthorsByID);
     } catch (error: any) {
       console.error(
         "dB 206: Error when executing a request to delete data from the database:",
         error
       );
-      // Повторная небезопасная попытка удаления данных из БД !
+      // Repeated unsafe(!) attempt to delete data from the database.
       await getRepeatRequest();
     }
   }
 
-  // Повторная попытка удаления данных из БД.
+  // Repeated attempt to delete data from the database.
   async function getRepeatRequest() {
-    // Принудительное выполнение удаления данных небезопасным способом!!!
+    // Forcing data deletion in an unsafe way(!).
     try {
-      // Отключение 'safe update mode'.
+      // Disable 'safe update mode'(!).
       const disableProtection: string = unsafeRequests.safeOff!;
       await dbConnection.query(disableProtection);
-      // Повторное выполнение запроса.
+      // Performing deletion.
       await dbConnection.execute(Types.SqlQuery.removeUnusedAuthorsByID);
       console.log(
         `Удаление данных выполнено небезопасным способом в ${getCurrentTime()}.`
@@ -226,7 +226,7 @@ export async function removeMarkedBooks() {
     } catch (error) {
       console.error("Error while retrying main request:", error);
     } finally {
-      // Обязательное включение 'safe update mode'.
+      // Mandatory inclusion of 'safe update mode'(!).
       const enableProtection: string = unsafeRequests.safeOn!;
       await dbConnection.execute(enableProtection);
       console.log(`'safe update mode' включено.`);
@@ -234,10 +234,10 @@ export async function removeMarkedBooks() {
   }
 }
 
-// Обновление базы данных.
+// Database update.
 export async function updateDB() {
   try {
-    // Получение пути к файлу с именем резервной копии.
+    // Getting the path to the file with the backup name.
     const pathToLastDump: string = path.join(
       getBasePath(),
       "src",
@@ -245,10 +245,10 @@ export async function updateDB() {
       "dumps",
       "lastDump.txt"
     );
-    // Чтение имени резервной копии из файла.
+    // Reading the backup name from a file.
     const fileNameForUpdateDB = readFileSync(pathToLastDump, "utf-8");
 
-    // Получение пути к файлу с SQL-запросами для обновления БД.
+    // Obtaining the path to the file with requests for updating the database.
     const updateDBPath = path.join(
       getBasePath(),
       "src",
@@ -256,13 +256,13 @@ export async function updateDB() {
       "dumps",
       fileNameForUpdateDB
     );
-    // Чтение SQL-запросов из файла.
+    // Reading SQL queries from a file.
     const updateDBSql = readFileSync(updateDBPath, "utf8");
 
-    // Удаление всех таблиц из БД.
+    // Removing all tables from the database.
     await deleteTables();
 
-    // Выполнение SQL-запросов для обновления БД.
+    // Database update.
     await dbConnection.query(updateDBSql);
     console.log(`БД обновлена в ${getCurrentTime()}.`);
   } catch (error) {

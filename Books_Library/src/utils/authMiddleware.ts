@@ -2,36 +2,35 @@ import { getEnvParams } from "../modules/dotenv.js";
 import { Request, Response, NextFunction } from "express";
 import basicAuth from "express-basic-auth";
 
-/* Получение значения параметра 'adminParam' из переменных окружения
-  и преобразование его в строку. */
+/* Get the value of the 'adminParam' parameter from environment variables 
+   and convert it to a string. */
 const access: string = getEnvParams().adminParam!;
 
-// Создание 'middleware' для базовой аутентификации с заданными параметрами.
+// Creating 'middleware' for basic authentication with given parameters.
 export const auth = basicAuth({
-  // Список пользователей и их паролей.
+  // List of users and their passwords.
   users: { admin: "pass" },
-  // Сообщение в случае неавторизованного доступа.
+  // Message in case of unauthorized access.
   unauthorizedResponse: "Unauthorized",
-  // Флаг, указывающий необходимость отправления заголовка 'WWW-Authenticate'.
+  // Flag to send 'WWW-Authenticate' header.
   challenge: true,
 });
 
-// Создание функцию 'middleware' для проверки авторизации.
+// Creating a 'middleware' function to check authorization.
 export default function getAuth(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  // Получение значения заголовка 'Authorization' из запроса.
+  // Getting the 'Authorization' header value from the request.
   const user = req.get("authorization");
-  /* Если заголовок 'Authorization' отсутствует или его значение не совпадает 
-    с 'access' => отправка заголовка 'WWW-Authenticate' с соответствующей 
-    ошибкой 401 (Unauthorized) */
+  /* If the 'Authorization' header is missing or its value does not match 'access' => 
+    send the 'WWW-Authenticate' header with the corresponding error 401 (Unauthorized) */
   if (!user && access !== user) {
     res.set("WWW-Authenticate", 'Basic realm="Login Required"');
     res.status(401);
   } else {
-    // Если авторизация прошла успешно => вызов следующей функции в цепочке 'middleware'.
+    // If authorization was successful => call the next function in the 'middleware' chain.
     return next();
   }
 }

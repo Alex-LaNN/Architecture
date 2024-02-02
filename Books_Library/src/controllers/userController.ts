@@ -5,53 +5,53 @@ import { limitBooksToDisplay } from "../utils/params.js";
 import { Book } from "../models/book.js";
 import { getViewPath } from "../utils/utils.js";
 
-// Получение страницы книги.
+// Getting a book page.
 export async function getBookPage(req: Request, res: Response) {
-  // Получение 'id' книги из параметров запроса с преобразованием его в число.
+  // Getting the 'id' of a book from the request parameters and converting it to a number.
   const id: number = +req.params.id;
   try {
-    // Увеличение счетчика количества просмотров книги.
+    // Increasing the counter for the number of book views.
     await dbConnection.execute(SqlQuery.updateBookViewsById, [id]);
-    // Получение данные книги по ее 'id' из базы данных.
+    // Retrieving book data by its 'id' from the database.
     const book: Book = (
       await dbConnection.query<Book[]>(SqlQuery.getBookById, [id])
     )[0][0];
-    // Получение пути к шаблону страницы книги.
+    // Getting the path to the book page template.
     const path = getViewPath("book-page") + "";
-    // Если книга найдена, отображение ее страницы.
+    // If a book is found, its page is displayed.
     if (book) res.render(path, { book });
   } catch (error) {
     res.status(500).send({ error: `No book were found for this search.` });
   }
 }
 
-// Получение страницы со всеми книгами.
+// Getting a page with all books.
 export async function getAllBooksPage(req: Request, res: Response) {
-  // Получение строки поиска из запроса с преобразованием ее в строку.
+  // Retrieving a search string from a query and converting it to a string.
   let searchString: string = req.query.search + "";
-  // Получение смещения (offset) из запроса с преобразованием его в число.
+  // Getting the offset from the request and converting it to a number.
   const offset: number = +(req.query.offset || 0);
-  // Определение наличия предыдущей страницы с книгами.
+  // Determining the presence of a previous page with books.
   const previous: boolean = offset > 0;
 
   try {
-    // Получение списка книг из базы данных.
+    // Getting a list of books from the database.
     let books: Book[] = (
       await dbConnection.query<Book[]>(SqlQuery.getAllBooks)
     )[0];
-    // Рассчет общего количества страниц.
+    // Calculation of the total number of pages.
     const pages: number = Math.ceil(books.length / limitBooksToDisplay);
-    // Определение количества книг на текущей странице.
+    // Determining the number of books on the current page.
     const countBooksOnPage: number = limitBooksToDisplay + offset;
-    // Определение есть ли следующая страница с книгами для отображения.
+    // Determining whether there is a next page of books to display.
     const nextBooks: boolean = books.length > countBooksOnPage;
 
-    // Получение списка книг для текущей страницы.
+    // Getting a list of books for the current page.
     books = books.slice(0, countBooksOnPage);
-    // Получение пути к шаблону страницы с отображаемыми книгами.
+    // Getting the path to the page template with the books displayed.
     const path: string = getViewPath("books-page") + "";
 
-    // Отображение страницы со всеми книгами с передачей данных в шаблон.
+    // Displaying a page with all books with data transfer to the template.
     res.render(path, {
       books,
       pages,
@@ -65,10 +65,10 @@ export async function getAllBooksPage(req: Request, res: Response) {
   }
 }
 
-// Увеличение количества кликов книги.
+// Increase in book clicks.
 export async function incrementWantCount(req: Request, res: Response) {
   const id: number = +req.params.id;
-  // Проверка, что id - это действительное число.
+  // Checking that id is a real number.
   if (isNaN(id)) {
     return res.status(400).json({ status: false, error: "Invalid book id" });
   }

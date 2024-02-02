@@ -4,19 +4,18 @@ import { dbConnection } from "../database/migrations/dataBase.js";
 import getSecureString, { getViewPath } from "../utils/utils.js";
 import { Book } from "../models/book.js";
 
-// Поиск книг с использованием поисковой строки.
+// Search for books using the search bar.
 export async function findBooks(req: Request, res: Response) {
-  // Создание необходимых полей в ответе.
+  // Creating the required fields in the response.
   res.locals = {
     ...res.locals,
     success: req.query.success === "false",
     message: req.query.message || "",
   };
-  // Получение результатов поиска.
+  // Getting search results.
   const value = await getBooks(req, res);
-  // Отображение результатов поиска.
+  // Display search results.
   const path = getViewPath("finded-results-page") + "";
-  //console.log(`path: ${path}`);
   if (value?.result) {
     const messageString: string = getMessage(value);
     res.render(path, {
@@ -32,32 +31,32 @@ export async function findBooks(req: Request, res: Response) {
   }
 }
 
-// Поиск книг по БД.
+// Search for books by database.
 async function getBooks(req: Request, res: Response) {
   let numberSearchString: number;
-  // Получить поисковую строку из запроса.
+  // Get the search string from the query.
   const searchString: string = req.query.search as string;
   if (!searchString) {
-    // Если не найдено ни одного заданного параметра для поиска => ошибка.
+    // If no specified search parameters are found => error.
     res.status(400).json({
       error: "No search parameters found.",
     });
   } else {
-    // Дополнительная обработка поисковой строки!!!.
+    // Additional processing of the search string!!!.
     const checkedString = getSecureString(searchString);
-    // Проверка - является ли 'searchString' числом.
+    // Checking whether 'searchString' is a number.
     numberSearchString = Number(checkedString) || 0;
     const result = await searchBooks(checkedString, numberSearchString);
     return { result, checkedString, numberSearchString };
   }
 }
 
-// Осуществление поиска с выбором соответствующих запросов к БД.
+// Carrying out a search with the selection of appropriate queries to the database.
 async function searchBooks(
   searchString: string,
   numberSearchString: number
 ): Promise<Book[]> {
-  // Получить результаты поиска по соответствующему SQL-запросу.
+  // Get search results for the corresponding SQL query.
   if (numberSearchString === 0) {
     return (
       await dbConnection.query<Book[]>(SqlQuery.findBooksByNames, [
@@ -75,7 +74,7 @@ async function searchBooks(
   }
 }
 
-// Генерация отображаемого сообщения о полученных результатах поиска.
+// Generating a message about the search results obtained.
 function getMessage(value: any): string {
   const count = value.result.length;
   const param = value.numberSearchString

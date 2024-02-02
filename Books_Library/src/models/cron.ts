@@ -6,18 +6,18 @@ import {
 } from "../database/migrations/dataBase";
 import { getCurrentTime } from "../utils/utils";
 
-// Запуск запланированных задач (cron jobs).
+// Running scheduled tasks (cron jobs).
 export function startCron() {
   console.log(`c 11: Крон запущен в ${getCurrentTime()}.`);
-  // Запуск удаления отмеченных книг.
+  // Start deleting marked books.
   cron.schedule("*/5 * * * *", async () => {
     await removeMarkedBooks();
   });
-  // Запуск резервного копирования базы данных.
+  // Starting a database backup.
   cron.schedule("1 * * * *", async () => {
     await getDataBaseDump();
   });
-  // Запуск обновления базы данных.
+  // Start the database update.
   cron.schedule("3 * * * *", async () => {
     await updateDB();
   });

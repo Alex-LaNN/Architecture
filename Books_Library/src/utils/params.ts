@@ -1,7 +1,7 @@
 import { getEnvParams } from "../modules/dotenv";
 
-// Получение и экспорт параметров из файла конфигурации.
+// Receiving and exporting parameters from a configuration file.
 export const { limitBooks, port, host } = getEnvParams();
 
-// Определение ограничения на количество отображаемых книг на странице.
+// Defining a limit on the number of books displayed on a page.
 export const limitBooksToDisplay: number = +(limitBooks || 20);

@@ -6,23 +6,23 @@ import { initializeDB } from "./database/migrations/dataBase.js";
 import { port } from "./utils/params.js";
 import { startCron } from "./models/cron.js";
 
-// Запуск запланированных задач.
+// Start scheduled tasks.
 startCron();
-// Создание экземпляра приложения Express.
+// Create an Express application instance.
 const app: Express = express();
 app.use(express.json());
-// Обработка 'URL-encoded' данных с расширенной поддержкой.
+// Handling 'URL-encoded' data with enhanced support.
 app.use(express.urlencoded({ extended: true }));
-// Установка базовой директории для статических файлов.
+// Set a base directory for static files.
 const basePath = process.cwd();
 app.use(express.static(path.join(basePath, "src", "views")));
-// Подключение конфигурации 'CORS'.
+// Connection of 'CORS' configuration.
 app.use(cors);
-// Установка движка для шаблонов 'EJS'.
+// Installing the 'EJS' template engine.
 app.set("view-engine", "ejs");
-// Подключение роутов приложения.
+// Connecting app routes.
 app.use(router);
-// Инициализация базы данных.
+// Database Initialization.
 initializeDB();
 
 // Start the Express server on the specified port.

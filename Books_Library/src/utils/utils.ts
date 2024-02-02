@@ -1,17 +1,17 @@
 import { format } from "date-fns";
 import path from "path";
 
-// Обработка получаемой от клиента строки.
+// Processing a string received from the client.
 export default function getSecureString(searchString: string) {
-  // Удаление потенциально опасных символов.
+  // Removing potentially harmful characters.
   while (searchString.match(/\/\*|\-\-|;/g)) {
     searchString = searchString.replace(/\/\*|\-\-|;/g, "");
   }
-  // Экранирование специальных символов, чтобы они не интерпретировались как часть SQL-запроса.
+  // Escaping special characters so that they are not interpreted as part of an SQL query.
   return searchString.replace(/"|'|`/g, (match) => `\\${match}`);
 }
 
-// Проверка факта добавления данных в таблицу.
+// Checking whether data has been added to the table.
 export function checkUpdeteTable(
   resultForTableName: { affectedRows: number }[]
 ) {
@@ -23,36 +23,30 @@ export function checkUpdeteTable(
   );
 }
 
-// Получение базового пути к корневой директории проекта.
+// Getting the base path to the project root directory.
 export function getBasePath() {
   return process.cwd();
 }
 
-// Получение абсолютного пути к представлению.
+// Get the absolute path to the view.
 export function getViewPath(fileName: string): string {
-  // Получение текущего рабочего каталога.
-  const basePath = process.cwd();
-  // Получение абсолютного пути к представлению.
-  const viewPath = path.resolve(
-    basePath,
+  return path.resolve(
+    getBasePath(),
     `../Books_Library/src/views/book/${fileName}.ejs`
   );
-  return viewPath;
 }
 
-//
+// Getting the absolute path to the file.
 export function getPath(newFileName: string) {
-  // Получение текущего рабочего каталога.
-  const basePath = process.cwd();
-  return basePath + newFileName;
+  return getBasePath() + newFileName;
 }
 
-// Получение значения времени.
+// Getting the current time in milliseconds.
 export function getTime() {
   return new Date().getTime();
 }
 
-// Получение значения текущего времени в удобночитаемом формате.
+// Receiving the current time value in an easy-to-read format.
 export function getCurrentTime() {
   return format(new Date(), "HH:mm:ss_yyyy");
 }

@@ -15,7 +15,7 @@ const authData = {
   challenge: true,
 };
 
-// Роуты для пользователей.
+// Роуты для обычных пользователей.
 router.get("/", userController.getAllBooksPage);
 router.get("/book/:id", userController.getBookPage);
 router.get("/search", findBooks);
@@ -33,7 +33,7 @@ router.post(
 router.delete(
   "/admin/api/v1/delete_book/:id",
   auth(authData),
-  adminController.deleteBook
+  adminController.markForDeleteBook
 );
 router.patch(
   "/admin/api/v1/recover_book/:id",

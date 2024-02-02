@@ -3,12 +3,8 @@ import * as Types from "./databaseQueries.js";
 import { readFileSync, unlink, writeFileSync } from "fs";
 import mysqldump from "mysqldump";
 import { sqlConnectionConfig, unsafeRequests } from "../../modules/dotenv.js";
-import { getCurrentTime, getTime } from "../../utils/utils.js";
+import { getBasePath, getCurrentTime, getTime } from "../../utils/utils.js";
 import path from "path";
-import { toNumber } from "lodash";
-
-//
-const basePath = process.cwd();
 
 // Создание пула соединений с базой данных.
 export const dbConnection = mysql
@@ -92,17 +88,16 @@ async function insertDataIntoTables(tableName: string) {
 // Создание резервной копии БД.
 export async function getDataBaseDump() {
   // Формирование имени файла резервной копии.
-  const newFileName: string = getTime() + "_dump.sql";
-  console.log(`dB 95 newFileName: ${newFileName}`); //////////удалить////////////
+  const newDumpName: string = getTime() + "_dump.sql";
   // Запись имени файла для хранения последнего дампа БД.
-  writeFileSync("src/database/dumps/lastDump.txt", newFileName);
+  writeFileSync("src/database/dumps/lastDump.txt", newDumpName);
   // Получение полного пути к файлу резервной копии.
   const pathToNewFile: string = path.join(
-    basePath,
+    getBasePath(),
     "src",
     "database",
     "dumps",
-    newFileName
+    newDumpName
   );
   // Выполнение резервного копирования БД с помощью 'mysqldump'.
   mysqldump({
@@ -111,71 +106,92 @@ export async function getDataBaseDump() {
   })
     .then(() =>
       console.log(
-        `dB 113: The database dump was completed successfully at ${getCurrentTime()}`
+        `dB 109: The database dump was completed successfully at ${getCurrentTime()}`
       )
     )
     .catch((error) =>
-      console.log(`dB 117: Error while dumping database: ${error}`)
+      console.log(`dB 113: Error while dumping database: ${error}`)
     );
 }
 
 // Удаление книг из БД, отмеченных удаляемыми.
 export async function removeMarkedBooks() {
   try {
+    // Получение списка книг, отмеченных 'на удаление'.
     const bookIdsForDelete = (
       await dbConnection.query<RowDataPacket[]>(
         Types.SqlQuery.getBookIdsMurkedForDeletion
       )
     )[0].map((obj: RowDataPacket) => obj.id);
 
-    // Полное удаление всех данных, связанных с удаляемой книгой.
+    // Список 'книг на удаление' не пустой.
     if (bookIdsForDelete && bookIdsForDelete.length > 0) {
       // Удаление каждой книги, отмеченной как 'удаляемая'.
       for (const bookId of bookIdsForDelete) {
         try {
-          await deleteBookImage(bookId);
-          await dbConnection.execute(Types.SqlQuery.deleteBookById, [bookId]);
-          // Удаление данных из таблицы 'book_authors'.
-          await deleteAuthorsAfterDeleteBook();
-          console.log(`dB 141: Book with id ${bookId} has been deleted.`);
+          // Удаление книги и всех ее связей.
+          await removeBook(bookId);
         } catch (error) {
           console.log(
-            `dB 144: Ошибка удаления книги с id = ${bookId}: ${error}`
+            `dB 136: Ошибка удаления книги с id = ${bookId}: ${error}`
           );
         }
       }
-    } else {
-      console.log(`dB 148: No books marked for deletion.`);
     }
   } catch (error) {
-    console.error("dB 151: Error removing marked books:", error);
+    console.error("dB 142: Error removing marked books:", error);
   }
 
-  // 
-  async function deleteBookImage(bookId: any) {
+  // Удаление книги и всех ее связей.
+  async function removeBook(bookId: number) {
     try {
-      console.log(`dB 157: bookId: ${typeof (bookId)} - ${bookId}`);//////////////
+      // Получение значения времени, в которое книга должна быть удалена.
+      const requestData: any = (
+        await dbConnection.query(Types.SqlQuery.getRemovalTimeById, [bookId])
+      )[0];
+      const removalTime = requestData[0].removal_time;
+      // Флаг удаления книги.
+      const forRemoval: boolean = removalTime < getTime();
+      // Удаление книги и всех ее связей.
+      if (forRemoval) {
+        // Удаление обложки книги.
+        await deleteBookImage(bookId);
+        // Удаление самой книги.
+        await dbConnection.execute(Types.SqlQuery.deleteBookById, [bookId]);
+        // Удаление данных из таблицы 'book_authors', связанных с удаленной книгой.
+        await deleteAuthorsAfterDeleteBook();
+        console.log(`dB 163: Book with id: ${bookId} has been deleted.`);
+      }
+    } catch (error) {
+      console.error(`dB 166: Error removing book with id: ${bookId}.`, error);
+    }
+  }
+
+  // Удаление изображения книги.
+  async function deleteBookImage(bookId: number) {
+    try {
+      // Получение имени изображения из БД.
       const requestData: any = (
         await dbConnection.query(Types.SqlQuery.getImageNameById, [bookId])
       )[0];
       const imageName = requestData[0].image;
+      // Формирование пути к файлу изображения.
       const pathToDeleteImage: string = path.join(
-        basePath,
+        getBasePath(),
         "src",
         "views",
         "images",
         imageName + ".jpg"
       );
+      // Удаление файла изображения.
       unlink(pathToDeleteImage, (error) => {
         if (error) {
-          console.error(
-            `Ошибка удаления изображения: ${error}`
-          );
+          console.error(`dB 189: Ошибка удаления изображения: ${error}`);
         }
       });
     } catch (error) {
       console.error(
-        `dB 185: Ошибка, при удалении изображения книги ${bookId}.`
+        `dB 194: Ошибка, при получении имени изображения книги ${bookId}.`
       );
     }
   }
@@ -185,12 +201,9 @@ export async function removeMarkedBooks() {
     try {
       // Попытка выполнить запрос на удаление данных.
       await dbConnection.execute(Types.SqlQuery.removeUnusedAuthorsByID);
-      console.log(
-        `dB 196: Удаление данных выполнено штатно в ${getCurrentTime()}.`
-      );
     } catch (error: any) {
       console.error(
-        "dB 200: Error when executing a request to delete data from the database:",
+        "dB 206: Error when executing a request to delete data from the database:",
         error
       );
       // Повторная небезопасная попытка удаления данных из БД !
@@ -226,7 +239,7 @@ export async function updateDB() {
   try {
     // Получение пути к файлу с именем резервной копии.
     const pathToLastDump: string = path.join(
-      basePath,
+      getBasePath(),
       "src",
       "database",
       "dumps",
@@ -234,11 +247,10 @@ export async function updateDB() {
     );
     // Чтение имени резервной копии из файла.
     const fileNameForUpdateDB = readFileSync(pathToLastDump, "utf-8");
-    //    console.log(`dB 205 fileNameForUpdateDB: ${fileNameForUpdateDB}`); //////////////////
 
     // Получение пути к файлу с SQL-запросами для обновления БД.
     const updateDBPath = path.join(
-      basePath,
+      getBasePath(),
       "src",
       "database",
       "dumps",

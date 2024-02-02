@@ -1,6 +1,6 @@
 // Список SQL-запросов к БД.
 export enum SqlQuery {
-  createBooksTable = `CREATE TABLE books (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL, year INT NOT NULL, pages INT NOT NULL, description VARCHAR(255), authors VARCHAR(255), image VARCHAR(255), views INT DEFAULT 0, clicks INT DEFAULT 0, deleted INT DEFAULT 0);`,
+  createBooksTable = `CREATE TABLE books (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL, year INT NOT NULL, pages INT NOT NULL, description VARCHAR(255), authors VARCHAR(255), image VARCHAR(255), views INT DEFAULT 0, clicks INT DEFAULT 0, deleted INT DEFAULT 0, removal_time BIGINT DEFAULT 0);`,
   createAuthorsTable = `CREATE TABLE book_authors (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255) NOT NULL UNIQUE);`,
   createConnectionsTable = `CREATE TABLE connections (
   bookId INT,
@@ -29,8 +29,8 @@ export enum SqlQuery {
   deleteAuthorsTable = `DROP TABLE IF EXISTS book_authors;`,
   deleteConnectionsTable = `DROP TABLE IF EXISTS connections;`,
   deleteBookById = `DELETE FROM books WHERE id = ?;`,
-  markForDeletion = `UPDATE books SET deleted = 1 WHERE id = ?;`,
-  markForRecover = `UPDATE books SET deleted = 0 WHERE id = ?;`,
+  markForDeletion = `UPDATE books SET deleted = 1, removal_time = ? WHERE id = ?;`,
+  markForRecover = `UPDATE books SET deleted = 0, removal_time = 0 WHERE id = ?;`,
   getAllBooks = `SELECT books.* FROM books;`,
   getBooksByPage = `SELECT * FROM books LIMIT ?, ?;`,
   findBooksByName = `SELECT * FROM books WHERE name LIKE CONCAT('%', ?, '%');`,
@@ -69,4 +69,5 @@ export enum SqlQuery {
   getBookIdsMurkedForDeletion = `SELECT books.id FROM books WHERE deleted = 1;`,
   removeUnusedAuthorsByID = `DELETE FROM book_authors WHERE id NOT IN (SELECT DISTINCT authorId FROM connections);`,
   getImageNameById = `SELECT books.image FROM books WHERE id = ?;`,
+  getRemovalTimeById = `SELECT books.removal_time FROM books WHERE id = ?;`,
 }

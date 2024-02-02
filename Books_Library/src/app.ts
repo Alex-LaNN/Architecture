@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Установка базовой директории для статических файлов.
 const basePath = process.cwd();
-app.use(express.static(path.join(basePath, "./src/views")));
+app.use(express.static(path.join(basePath, "src", "views")));
 // Подключение конфигурации 'CORS'.
 app.use(cors);
 // Установка движка для шаблонов 'EJS'.

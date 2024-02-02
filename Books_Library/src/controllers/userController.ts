@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { SqlQuery } from "../database/migrations/databaseQueries.js";
 import { dbConnection } from "../database/migrations/dataBase.js";
-import { getViewPath, limitBooksToDisplay } from "../utils/params.js";
+import { limitBooksToDisplay } from "../utils/params.js";
 import { Book } from "../models/book.js";
+import { getViewPath } from "../utils/utils.js";
 
 // Получение страницы книги.
 export async function getBookPage(req: Request, res: Response) {
@@ -67,6 +68,10 @@ export async function getAllBooksPage(req: Request, res: Response) {
 // Увеличение количества кликов книги.
 export async function incrementWantCount(req: Request, res: Response) {
   const id: number = +req.params.id;
+  // Проверка, что id - это действительное число.
+  if (isNaN(id)) {
+    return res.status(400).json({ status: false, error: "Invalid book id" });
+  }
   await dbConnection.execute(SqlQuery.incrementWantedById, [id]);
   res.json({ status: true });
 }

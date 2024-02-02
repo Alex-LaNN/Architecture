@@ -4,12 +4,13 @@ import {
   removeMarkedBooks,
   updateDB,
 } from "../database/migrations/dataBase";
+import { getCurrentTime } from "../utils/utils";
 
 // Запуск запланированных задач (cron jobs).
 export function startCron() {
-  console.log(`c 10: Крон запущен.`);
+  console.log(`c 11: Крон запущен в ${getCurrentTime()}.`);
   // Запуск удаления отмеченных книг.
-  cron.schedule("*/2 * * * *", async () => {
+  cron.schedule("*/5 * * * *", async () => {
     await removeMarkedBooks();
   });
   // Запуск резервного копирования базы данных.
@@ -20,5 +21,4 @@ export function startCron() {
   cron.schedule("3 * * * *", async () => {
     await updateDB();
   });
-  console.log(`c 23: Планирование прошло успешно...`);
 }

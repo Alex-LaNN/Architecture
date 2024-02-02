@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `book_authors` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE = InnoDB AUTO_INCREMENT = 81 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 107 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: books
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `books` (
   `clicks` int DEFAULT '0',
   `deleted` int DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 59 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 73 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: connections
@@ -72,6 +72,10 @@ INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
   (25, 'Анирад Коул');
+INSERT INTO
+  `book_authors` (`id`, `name`)
+VALUES
+  (102, 'апапапап');
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
@@ -148,6 +152,10 @@ INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
   (27, 'Имран Башир');
+INSERT INTO
+  `book_authors` (`id`, `name`)
+VALUES
+  (104, 'йцйцй');
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
@@ -279,7 +287,15 @@ VALUES
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
+  (105, 'цуцу');
+INSERT INTO
+  `book_authors` (`id`, `name`)
+VALUES
   (37, 'Чарльз Лейзерсон');
+INSERT INTO
+  `book_authors` (`id`, `name`)
+VALUES
+  (101, 'ывывыв');
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
@@ -1571,6 +1587,58 @@ VALUES
     0,
     0
   );
+INSERT INTO
+  `books` (
+    `id`,
+    `name`,
+    `year`,
+    `pages`,
+    `description`,
+    `authors`,
+    `image`,
+    `views`,
+    `clicks`,
+    `deleted`
+  )
+VALUES
+  (
+    71,
+    '1',
+    2024,
+    2024,
+    'апиыкпывп',
+    'ывывыв, апапапап',
+    '1706860796468_ddo5zrh',
+    0,
+    0,
+    0
+  );
+INSERT INTO
+  `books` (
+    `id`,
+    `name`,
+    `year`,
+    `pages`,
+    `description`,
+    `authors`,
+    `image`,
+    `views`,
+    `clicks`,
+    `deleted`
+  )
+VALUES
+  (
+    72,
+    '2',
+    2024,
+    2024,
+    'ыаыпмывапыап',
+    'йцйцй, цуцу',
+    '1706860846909_xrmlu86',
+    0,
+    0,
+    0
+  );
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: connections
@@ -1816,6 +1884,22 @@ INSERT INTO
   `connections` (`bookId`, `authorId`)
 VALUES
   (49, 60);
+INSERT INTO
+  `connections` (`bookId`, `authorId`)
+VALUES
+  (71, 101);
+INSERT INTO
+  `connections` (`bookId`, `authorId`)
+VALUES
+  (71, 102);
+INSERT INTO
+  `connections` (`bookId`, `authorId`)
+VALUES
+  (72, 104);
+INSERT INTO
+  `connections` (`bookId`, `authorId`)
+VALUES
+  (72, 105);
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `book_authors` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE = InnoDB AUTO_INCREMENT = 94 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 72 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: books
@@ -32,8 +32,9 @@ CREATE TABLE IF NOT EXISTS `books` (
   `views` int DEFAULT '0',
   `clicks` int DEFAULT '0',
   `deleted` int DEFAULT '0',
+  `removal_time` bigint DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 64 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
+) ENGINE = InnoDB AUTO_INCREMENT = 55 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci;
 
 # ------------------------------------------------------------
 # SCHEMA DUMP FOR TABLE: connections
@@ -75,7 +76,7 @@ VALUES
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
-  (87, 'апр');
+  (67, 'апр');
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
@@ -91,7 +92,11 @@ VALUES
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
-  (84, 'выап');
+  (61, 'вапрвчаи');
+INSERT INTO
+  `book_authors` (`id`, `name`)
+VALUES
+  (71, 'впропл');
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
@@ -275,10 +280,6 @@ VALUES
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
-  (85, 'фпрфв');
-INSERT INTO
-  `book_authors` (`id`, `name`)
-VALUES
   (52, 'Харви Дейтел');
 INSERT INTO
   `book_authors` (`id`, `name`)
@@ -295,10 +296,6 @@ VALUES
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
-  (90, 'шжд');
-INSERT INTO
-  `book_authors` (`id`, `name`)
-VALUES
   (55, 'Энтони Грей');
 INSERT INTO
   `book_authors` (`id`, `name`)
@@ -311,7 +308,11 @@ VALUES
 INSERT INTO
   `book_authors` (`id`, `name`)
 VALUES
-  (88, 'явпп');
+  (68, 'яаиячи');
+INSERT INTO
+  `book_authors` (`id`, `name`)
+VALUES
+  (62, 'яамва');
 
 # ------------------------------------------------------------
 # DATA DUMP FOR TABLE: books
@@ -328,7 +329,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -341,6 +343,7 @@ VALUES
     'Python для начинающих',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -354,7 +357,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -367,6 +371,7 @@ VALUES
     'JavaScript с нуля до профи',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -380,7 +385,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -393,6 +399,7 @@ VALUES
     'Java программирование для начинающих',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -406,7 +413,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -419,6 +427,7 @@ VALUES
     'C++ базовый курс',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -432,7 +441,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -445,6 +455,7 @@ VALUES
     'HTML и CSS. Разработка и дизайн веб-сайтов',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -458,7 +469,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -471,6 +483,7 @@ VALUES
     'MySQL по максимуму',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -484,7 +497,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -497,6 +511,7 @@ VALUES
     'Pro Git',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -510,7 +525,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -523,6 +539,7 @@ VALUES
     'Linux. Командная строка. Лучшие практики',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -536,7 +553,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -549,6 +567,7 @@ VALUES
     'Python для сетевых инженеров Автоматизация сети, программирование и DevOps.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -562,7 +581,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -575,6 +595,7 @@ VALUES
     'JavaScript для профессионалов',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -588,7 +609,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -601,6 +623,7 @@ VALUES
     'Основы Java',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -614,7 +637,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -627,6 +651,7 @@ VALUES
     'C++ для профи. Молниеносный старт.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -640,7 +665,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -653,6 +679,7 @@ VALUES
     'Веб-дизайн для начинающих. HTML, CSS, JavaScript и веб-графики.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -666,7 +693,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -679,6 +707,7 @@ VALUES
     'SQL. Коллекция рецептов.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -692,7 +721,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -705,6 +735,7 @@ VALUES
     'Изучаем SQL. Генерация, выборка и обработка данных.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -718,7 +749,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -731,6 +763,7 @@ VALUES
     'Язык программирования GO',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -744,7 +777,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -757,6 +791,7 @@ VALUES
     'Алгоритмы. Теория и практическое применение',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -770,7 +805,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -783,6 +819,7 @@ VALUES
     'Машинное обучение',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -796,7 +833,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -809,6 +847,7 @@ VALUES
     'Искусственный интеллект и компьютерное зрение.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -822,7 +861,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -835,6 +875,7 @@ VALUES
     'Основы блокчейна.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -848,7 +889,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -861,6 +903,7 @@ VALUES
     'Блокчейн. Архитектура, криптовалюты, инструменты разработки, смарт-контракты',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -874,7 +917,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -887,6 +931,7 @@ VALUES
     'СИ++ И КОМПЬЮТЕРНАЯ ГРАФИКА',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -900,7 +945,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -913,6 +959,7 @@ VALUES
     'Программирование на языке Go!',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -926,7 +973,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -939,6 +987,7 @@ VALUES
     'Head First. Программирование для Android на Kotlin.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -952,7 +1001,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -965,6 +1015,7 @@ VALUES
     'Толковый словарь сетевых терминов и аббревиатур',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -978,7 +1029,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -991,6 +1043,7 @@ VALUES
     'Python for Data Analysis',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1004,7 +1057,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1017,6 +1071,7 @@ VALUES
     'Thinking in Java (4th Edition)',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1030,7 +1085,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1043,6 +1099,7 @@ VALUES
     'Универсальный самоучитель Android для планшетов и смартфонов.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1056,7 +1113,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1069,6 +1127,7 @@ VALUES
     'Introduction to Algorithms',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1082,7 +1141,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1095,6 +1155,7 @@ VALUES
     'Unity 5.x. Программирование искусственного интеллекта в играх.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1108,7 +1169,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1121,6 +1183,7 @@ VALUES
     'JavaScript Pocket Reference',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1134,7 +1197,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1147,6 +1211,7 @@ VALUES
     'Adaptive Code',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1160,7 +1225,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1173,6 +1239,7 @@ VALUES
     'SQL The Complete Reference',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1186,7 +1253,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1199,6 +1267,7 @@ VALUES
     'PHP and MySQL Web Development',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1212,7 +1281,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1225,6 +1295,7 @@ VALUES
     'Статистический анализ и визуализация данных с помощью R',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1238,7 +1309,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1251,6 +1323,7 @@ VALUES
     'Computer Coding for Kid',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1264,7 +1337,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1277,6 +1351,7 @@ VALUES
     'Exploring Arduino Tools and Techniques for Engineering Wizardry',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1290,7 +1365,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1303,6 +1379,7 @@ VALUES
     'Программирование микроконтроллеров для начинающих и не только.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1316,7 +1393,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1329,6 +1407,7 @@ VALUES
     'The Internet of Things',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1342,7 +1421,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1355,6 +1435,7 @@ VALUES
     'Sketching User Experiences The Workbook.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1368,7 +1449,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1381,6 +1463,7 @@ VALUES
     'InDesign CS6.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1394,7 +1477,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1407,6 +1491,7 @@ VALUES
     'Адаптивный дизайн. Делаем сайты для любых устройств.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1420,7 +1505,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1433,6 +1519,7 @@ VALUES
     'Android для разработчиков.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1446,7 +1533,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1459,6 +1547,7 @@ VALUES
     'Clean Code A Handbook of Agile Software Craftsmanship.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1472,7 +1561,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1485,6 +1575,7 @@ VALUES
     'Swift Pocket Reference Programming for iOS and OS X.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1498,7 +1589,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1511,6 +1603,7 @@ VALUES
     'NoSQL Distilled A Brief Guide to the Emerging World of Polyglot Persistence.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1524,7 +1617,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1537,6 +1631,7 @@ VALUES
     'Head First Ruby.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1550,7 +1645,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1563,6 +1659,7 @@ VALUES
     'Practical Vim.',
     0,
     0,
+    0,
     0
   );
 INSERT INTO
@@ -1576,7 +1673,8 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
@@ -1589,31 +1687,6 @@ VALUES
     'Python. Разработка на основе тестирования.',
     0,
     0,
-    0
-  );
-INSERT INTO
-  `books` (
-    `id`,
-    `name`,
-    `year`,
-    `pages`,
-    `description`,
-    `authors`,
-    `image`,
-    `views`,
-    `clicks`,
-    `deleted`
-  )
-VALUES
-  (
-    60,
-    '1',
-    2024,
-    2024,
-    'ыпрыпрчап',
-    'выап, фпрфв',
-    '1706816705408_g10fjcf',
-    0,
     0,
     0
   );
@@ -1628,17 +1701,19 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
-    61,
-    '2',
+    50,
+    'ыап',
     2024,
     2024,
-    'раоалаглав',
-    'апр, явпп',
-    '1706816724083_yl6brwy',
+    'ароспичсмичми',
+    'вапрвчаи, яамва',
+    '1706869245276_j03us79',
+    0,
     0,
     0,
     0
@@ -1654,20 +1729,50 @@ INSERT INTO
     `image`,
     `views`,
     `clicks`,
-    `deleted`
+    `deleted`,
+    `removal_time`
   )
 VALUES
   (
-    62,
-    '3',
+    52,
+    'цыкп',
     2024,
     2024,
-    'врапао',
-    'шжд',
-    '1706816743760_2hoqexx',
+    'ваывм',
+    'апр, яаиячи',
+    '1706869340540_v7nvf9p',
     0,
     0,
-    0
+    1,
+    1706960378500
+  );
+INSERT INTO
+  `books` (
+    `id`,
+    `name`,
+    `year`,
+    `pages`,
+    `description`,
+    `authors`,
+    `image`,
+    `views`,
+    `clicks`,
+    `deleted`,
+    `removal_time`
+  )
+VALUES
+  (
+    54,
+    'вапрвр',
+    2024,
+    2024,
+    'аиыпывап',
+    'впропл',
+    '1706878659607_pqte99y',
+    0,
+    0,
+    1,
+    1706878964790
   );
 
 # ------------------------------------------------------------
@@ -1917,23 +2022,23 @@ VALUES
 INSERT INTO
   `connections` (`bookId`, `authorId`)
 VALUES
-  (60, 84);
+  (50, 61);
 INSERT INTO
   `connections` (`bookId`, `authorId`)
 VALUES
-  (60, 85);
+  (50, 62);
 INSERT INTO
   `connections` (`bookId`, `authorId`)
 VALUES
-  (61, 87);
+  (52, 67);
 INSERT INTO
   `connections` (`bookId`, `authorId`)
 VALUES
-  (61, 88);
+  (52, 68);
 INSERT INTO
   `connections` (`bookId`, `authorId`)
 VALUES
-  (62, 90);
+  (54, 71);
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

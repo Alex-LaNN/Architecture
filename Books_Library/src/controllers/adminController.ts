@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { SqlQuery } from "../database/migrations/databaseQueries.js";
 import { dbConnection } from "../database/migrations/dataBase.js";
-import { getViewPath, limitBooksToDisplay } from "../utils/params.js";
-import getSecureString from "../utils/utils.js";
+import { limitBooksToDisplay } from "../utils/params.js";
+import getSecureString, { getTime, getViewPath } from "../utils/utils.js";
 import { Book } from "../models/book.js";
 import { config } from "../modules/config.js";
 import * as Types from "../database/migrations/databaseQueries.js";
@@ -30,7 +30,7 @@ export async function getAdminPage(req: Request, res: Response) {
       await dbConnection.query<Book[]>(SqlQuery.getAllBooks)
     )[0].length;
 
-    // Нужно ли отображать следующую книгу на данной странице.
+    // Будет ли отображаться следующая книга на данной странице.
     const nextBooks: boolean = books.length > adminLimitBooks;
     // Получение значения количества страниц, необходимых для отображения всех книг.
     const totalPages: number = Math.ceil(booksLength / adminLimitBooks);
@@ -86,7 +86,7 @@ export async function addBook(req: Request, res: Response) {
       authors: getSecureString(Object.values(authors).join(", ")),
     };
 
-    // Получение сгенерированного имени изображения обложки добавляемой книги.
+    // Получение сгенерированного имени изображения для добавляемой книги.
     const fileName: string = config.fileName;
 
     // Добавление книги в БД.
@@ -99,7 +99,7 @@ export async function addBook(req: Request, res: Response) {
       fileName,
     ]);
 
-    //
+    // Успешность обновления строки в таблице books.
     if (
       Array.isArray(updateBooksTable) &&
       updateBooksTable[0] &&
@@ -108,18 +108,15 @@ export async function addBook(req: Request, res: Response) {
     ) {
       // Добавление новых данных в 'book_authors'.
       const newBookId: number = updateBooksTable[0].insertId;
-//      console.log(`aC 111: newBookId: ${newBookId}`); ///////////////////////////////////////////
       try {
         await dbConnection.execute(Types.SqlQuery.addNewAuthors, [newBookId]);
-//        console.log(`aC 114: Добавление новых данных в 'book_authors'...`); ///////////////////////
       } catch (error) {
         console.error(
-          `aC 117: Ошибка при добавлении новых данных в 'book_authors': ${error}`
+          `aC 115: Ошибка при добавлении новых данных в 'book_authors': ${error}`
         );
       }
       // Обновление таблицы 'connections'.
       await dbConnection.execute(Types.SqlQuery.uodateConnections, [newBookId]);
-//      console.log(`aC 122: 'connections' обновлена.`); /////////////////////////////////
       res.json({
         success: true,
         message: "Книга добавлена успешно.",
@@ -139,11 +136,14 @@ export async function addBook(req: Request, res: Response) {
   }
 }
 
-// Удаление книги.
-export async function deleteBook(req: Request, res: Response) {
+// Маркирование книги как 'удаляемая'.
+export async function markForDeleteBook(req: Request, res: Response) {
   const id: number = +req.params.id;
   try {
-    await dbConnection.execute(SqlQuery.markForDeletion, [id]);
+    // Время, по достижению которого книга будет удалена.
+    //    const timeToDelete: number = getTime() + 24 * 60 * 60 * 1000; // 1 день по условию...
+    const timeToDelete: number = getTime() + 300000; // 5 минут
+    await dbConnection.execute(SqlQuery.markForDeletion, [timeToDelete, id]);
     res.send({
       success: true,
       message:

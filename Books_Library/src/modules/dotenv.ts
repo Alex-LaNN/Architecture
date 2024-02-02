@@ -17,7 +17,7 @@ export const getEnvParams = () => {
   };
 };
 
-//
+/// Конфигурация подключения к базе данных.
 export const sqlConnectionConfig = {
   host: process.env.DB_HOST,
   user: String(process.env.DB_USER),
@@ -26,7 +26,7 @@ export const sqlConnectionConfig = {
   database: String(process.env.DB_NAME),
 };
 
-//
+// Небезопасные SQL-запросы для отключения и включения 'safe update mode'.
 export const unsafeRequests = {
   safeOff: process.env.Disable_safe_update_mode,
   safeOn: process.env.Enable_safe_update_mode,

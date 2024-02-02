@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import { SqlQuery } from "../database/migrations/databaseQueries.js";
 import { dbConnection } from "../database/migrations/dataBase.js";
-import { getViewPath } from "../utils/params.js";
-import getSecureString from "../utils/utils.js";
+import getSecureString, { getViewPath } from "../utils/utils.js";
 import { Book } from "../models/book.js";
 
 // Поиск книг с использованием поисковой строки.
@@ -46,19 +45,18 @@ async function getBooks(req: Request, res: Response) {
   } else {
     // Дополнительная обработка поисковой строки!!!.
     const checkedString = getSecureString(searchString);
-    console.log(`49 checkedString: ${checkedString}`);
     // Проверка - является ли 'searchString' числом.
-    numberSearchString = Number(checkedString);
-    if (Number.isNaN(numberSearchString)) {
-      numberSearchString = 0;
-    }
+    numberSearchString = Number(checkedString) || 0;
     const result = await searchBooks(checkedString, numberSearchString);
     return { result, checkedString, numberSearchString };
   }
 }
 
 // Осуществление поиска с выбором соответствующих запросов к БД.
-async function searchBooks(searchString: string, numberSearchString: number) {
+async function searchBooks(
+  searchString: string,
+  numberSearchString: number
+): Promise<Book[]> {
   // Получить результаты поиска по соответствующему SQL-запросу.
   if (numberSearchString === 0) {
     return (

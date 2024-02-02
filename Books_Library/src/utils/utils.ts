@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import path from "path";
 
 // Обработка получаемой от клиента строки.
 export default function getSecureString(searchString: string) {
@@ -8,11 +9,6 @@ export default function getSecureString(searchString: string) {
   }
   // Экранирование специальных символов, чтобы они не интерпретировались как часть SQL-запроса.
   return searchString.replace(/"|'|`/g, (match) => `\\${match}`);
-}
-
-// Получение значения времени.
-export function getTime() {
-  return new Date().getTime();
 }
 
 // Проверка факта добавления данных в таблицу.
@@ -27,6 +23,23 @@ export function checkUpdeteTable(
   );
 }
 
+// Получение базового пути к корневой директории проекта.
+export function getBasePath() {
+  return process.cwd();
+}
+
+// Получение абсолютного пути к представлению.
+export function getViewPath(fileName: string): string {
+  // Получение текущего рабочего каталога.
+  const basePath = process.cwd();
+  // Получение абсолютного пути к представлению.
+  const viewPath = path.resolve(
+    basePath,
+    `../Books_Library/src/views/book/${fileName}.ejs`
+  );
+  return viewPath;
+}
+
 //
 export function getPath(newFileName: string) {
   // Получение текущего рабочего каталога.
@@ -34,7 +47,12 @@ export function getPath(newFileName: string) {
   return basePath + newFileName;
 }
 
-//
+// Получение значения времени.
+export function getTime() {
+  return new Date().getTime();
+}
+
+// Получение значения текущего времени в удобночитаемом формате.
 export function getCurrentTime() {
   return format(new Date(), "HH:mm:ss_yyyy");
 }

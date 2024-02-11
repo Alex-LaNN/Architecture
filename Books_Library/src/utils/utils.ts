@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import path from "path";
+import { sqlConnectionConfig } from "../modules/dotenv";
 
 // Processing a string received from the client.
 export default function getSecureString(searchString: string) {
@@ -32,7 +33,7 @@ export function getBasePath() {
 export function getViewPath(fileName: string): string {
   return path.resolve(
     getBasePath(),
-    `../Books_Library/src/views/book/${fileName}.ejs`
+    `./src/views/book/${fileName}.ejs`
   );
 }
 

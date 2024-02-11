@@ -13,7 +13,7 @@ export function startCron() {
   cron.schedule("*/5 * * * *", async () => {
     await removeMarkedBooks();
   });
-  // Starting a database backup.
+  // Start a database backup.
   cron.schedule("1 * * * *", async () => {
     await getDataBaseDump();
   });
